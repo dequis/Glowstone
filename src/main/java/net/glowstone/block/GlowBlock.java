@@ -2,6 +2,7 @@ package net.glowstone.block;
 
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowWorld;
+import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
@@ -230,9 +231,9 @@ public final class GlowBlock implements Block {
     }
 
     @Override
-    public void setData(byte data, boolean applyPhyiscs) {
+    public void setData(byte data, boolean applyPhysics) {
         chunk.setMetaData(x & 0xf, z & 0xf, y & 0x7f, data);
-        if (applyPhyiscs) {
+        if (applyPhysics) {
             // todo: physics
         }
         BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, getTypeId(), data);
@@ -366,4 +367,6 @@ public final class GlowBlock implements Block {
     public void removeMetadata(String metadataKey, Plugin owningPlugin) {
         metadata.removeMetadata(this, metadataKey, owningPlugin);
     }
+
+    private static final BlockFace[] surroundingFaces = new BlockFace[]{BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
 }
