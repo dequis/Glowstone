@@ -193,11 +193,16 @@ public final class GlowBlock implements Block {
 
     @Override
     public boolean setTypeIdAndData(int type, byte data, boolean applyPhysics) {
+        Material oldTypeId = getType();
+        byte oldData = getData();
+        
         chunk.setType(x & 0xf, z & 0xf, y, type);
         chunk.setMetaData(x & 0xf, z & 0xf, y, data);
+        
         if (applyPhysics) {
-            // todo: physics
+            applyPhysics(oldTypeId, type, oldData, data);
         }
+        
         BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, type, data);
         for (GlowPlayer p : getWorld().getRawPlayers()) {
             p.sendBlockChange(bcmsg);
@@ -232,9 +237,10 @@ public final class GlowBlock implements Block {
 
     @Override
     public void setData(byte data, boolean applyPhysics) {
+        byte oldData = getData();
         chunk.setMetaData(x & 0xf, z & 0xf, y & 0x7f, data);
         if (applyPhysics) {
-            // todo: physics
+            applyPhysics(getType(), getTypeId(), oldData, data);
         }
         BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, getTypeId(), data);
         for (GlowPlayer p : getWorld().getRawPlayers()) {
@@ -366,6 +372,27 @@ public final class GlowBlock implements Block {
     @Override
     public void removeMetadata(String metadataKey, Plugin owningPlugin) {
         metadata.removeMetadata(this, metadataKey, owningPlugin);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////
+    // Physics
+
+    /**
+     * Called to notify the current and it's surrounding blocks, that this block changes it's type and/or data.
+     */
+    public void applyPhysics(Material oldType, int newTypeId, byte oldData, byte newData) {
+        //Notify the surrounding blocks that this block has changed
+        ItemTable itemTable = ItemTable.instance();
+        Material newType = Material.getMaterial(newTypeId);
+
+        for (BlockFace face : surroundingFaces) {
+            GlowBlock notify = this.getRelative(face);
+            BlockType notifyType = itemTable.getBlock(notify.getTypeId());
+            if (notifyType != null)
+                notifyType.onNearBlockChanges(notify, face.getOppositeFace(), this, oldType, oldData, newType, newData);
+        }
+
+        itemTable.getBlock(oldType).onGoingToChange(this, oldType, oldData, newType, newData);
     }
 
     private static final BlockFace[] surroundingFaces = new BlockFace[]{BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};

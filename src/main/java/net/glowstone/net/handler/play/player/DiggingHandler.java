@@ -4,6 +4,7 @@ import com.flowpowered.networking.MessageHandler;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
+import net.glowstone.block.ItemTable;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.DiggingMessage;
@@ -90,6 +91,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             }
             // STEP_SOUND actually is the block break particles
             world.playEffectExceptTo(block.getLocation(), Effect.STEP_SOUND, block.getTypeId(), 64, player);
+            ItemTable.instance().getBlock(block.getType()).onBreak(block, player, player.getItemInHand());
             block.setType(Material.AIR);
         } else if (revert) {
             // replace the block that wasn't really dug
