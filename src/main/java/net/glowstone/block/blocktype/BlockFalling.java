@@ -7,21 +7,14 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
+/**
+ * Represents a block that falls down, when there's no block below it.
+ */
+public class BlockFalling extends BlockType {
+    private final Material drop;
 
-public class BlockGravel extends BlockFalling {
-    private final Random random = new Random();
-
-    public BlockGravel() {
-        super(Material.GRAVEL);
-    }
-
-    @Override
-    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        return Collections.unmodifiableList(Arrays.asList(new ItemStack(random.nextInt(10) == 1 ? Material.FLINT : Material.GRAVEL, 1)));
+    public BlockFalling(Material drop) {
+        this.drop = drop;
     }
 
     @Override
@@ -38,13 +31,17 @@ public class BlockGravel extends BlockFalling {
     @Override
     public void updatePhysics(GlowBlock me) {
         Block below = me.getRelative(BlockFace.DOWN);
-        if (below.getType() == Material.AIR) {
-            transformToFallingEntity(me);
+        switch (below.getType()) {
+            case AIR:
+            case FIRE:
+            case WATER:
+            case LAVA:
+                transformToFallingEntity(me);
         }
     }
 
     protected void transformToFallingEntity(GlowBlock me) {
         me.setType(Material.AIR);
-        me.getWorld().spawnFallingBlock(me.getLocation(), Material.GRAVEL, (byte) 0);
+        me.getWorld().spawnFallingBlock(me.getLocation(), drop, (byte) 0);
     }
 }
