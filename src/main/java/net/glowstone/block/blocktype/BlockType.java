@@ -143,6 +143,30 @@ public class BlockType extends ItemType {
         return block.isLiquid();
     }
 
+    /**
+     * Called when a near block changes it's type or data and applying physics.
+     *
+     * @param block         The block near the changing one
+     * @param position      The position where the changing block is (so BlockFace.DOWN = below block)
+     * @param changingBlock The block changing its type and/or data
+     * @param oldType       The old type of the changing block
+     * @param oldData       The old data of the changing block
+     * @param newType       The new type of the changing block
+     * @param newData       The new data of the changing block
+     */
+    public void onNearBlockChanges(GlowBlock block, BlockFace position, GlowBlock changingBlock, Material oldType, byte oldData, Material newType, byte newData) {
+
+    }
+
+    /**
+     * Called when the BlockType should calculate the current physics.
+     *
+     * @param me The block
+     */
+    public void updatePhysics(GlowBlock me) {
+
+    }
+
     @Override
     public final void rightClickBlock(GlowPlayer player, GlowBlock against, BlockFace face, ItemStack holding, Vector clickedLoc) {
         GlowBlock target = against.getRelative(face);
