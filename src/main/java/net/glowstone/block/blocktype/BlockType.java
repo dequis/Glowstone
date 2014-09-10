@@ -44,6 +44,7 @@ public class BlockType extends ItemType {
 
     /**
      * Get the items that will be dropped by digging the block.
+     *
      * @param block The block being dug.
      * @return The drops that should be returned.
      */
@@ -61,10 +62,11 @@ public class BlockType extends ItemType {
 
     /**
      * Create a new tile entity at the given location.
+     *
      * @param chunk The chunk to create the tile entity at.
-     * @param cx The x coordinate in the chunk.
-     * @param cy The y coordinate in the chunk.
-     * @param cz The z coordinate in the chunk.
+     * @param cx    The x coordinate in the chunk.
+     * @param cy    The y coordinate in the chunk.
+     * @param cz    The z coordinate in the chunk.
      * @return The new TileEntity, or null if no tile entity is used.
      */
     public TileEntity createTileEntity(GlowChunk chunk, int cx, int cy, int cz) {
@@ -73,7 +75,8 @@ public class BlockType extends ItemType {
 
     /**
      * Check whether the block can be placed at the given location.
-     * @param block The location the block is being placed at.
+     *
+     * @param block   The location the block is being placed at.
      * @param against The face the block is being placed against.
      * @return Whether the placement is valid.
      */
@@ -83,10 +86,11 @@ public class BlockType extends ItemType {
 
     /**
      * Called when a block is placed to calculate what the block will become.
-     * @param player the player who placed the block
-     * @param state the BlockState to edit
-     * @param holding the ItemStack that was being held
-     * @param face the face off which the block is being placed
+     *
+     * @param player     the player who placed the block
+     * @param state      the BlockState to edit
+     * @param holding    the ItemStack that was being held
+     * @param face       the face off which the block is being placed
      * @param clickedLoc where in the block the click occurred
      */
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
@@ -96,8 +100,9 @@ public class BlockType extends ItemType {
 
     /**
      * Called after a block has been placed by a player.
-     * @param player the player who placed the block
-     * @param block the block that was placed
+     *
+     * @param player  the player who placed the block
+     * @param block   the block that was placed
      * @param holding the the ItemStack that was being held
      */
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding) {
@@ -107,9 +112,10 @@ public class BlockType extends ItemType {
     /**
      * Called when a player attempts to interact with (right-click) a block of
      * this type already in the world.
-     * @param player the player interacting
-     * @param block the block interacted with
-     * @param face the clicked face
+     *
+     * @param player     the player interacting
+     * @param block      the block interacted with
+     * @param face       the clicked face
      * @param clickedLoc where in the block the click occurred
      * @return Whether the interaction occurred.
      */
@@ -122,8 +128,9 @@ public class BlockType extends ItemType {
      * this type. Used to determine if the placement should occur into the air
      * adjacent to the block (normal behavior), or absorbed into the block
      * clicked on.
-     * @param block The block the player right-clicked
-     * @param face The face on which the click occurred
+     *
+     * @param block   The block the player right-clicked
+     * @param face    The face on which the click occurred
      * @param holding The ItemStack the player was holding
      * @return Whether the place should occur into the block given.
      */
@@ -134,8 +141,9 @@ public class BlockType extends ItemType {
     /**
      * Called to check if this block can be overridden by a block place
      * which would occur inside it.
-     * @param block The block being targeted by the placement
-     * @param face The face on which the click occurred
+     *
+     * @param block   The block being targeted by the placement
+     * @param face    The face on which the click occurred
      * @param holding The ItemStack the player was holding
      * @return Whether this block can be overridden.
      */
@@ -248,8 +256,9 @@ public class BlockType extends ItemType {
 
     /**
      * Display the warning for finding the wrong MaterialData subclass.
+     *
      * @param clazz The expected subclass of MaterialData.
-     * @param data The actual MaterialData found.
+     * @param data  The actual MaterialData found.
      */
     protected void warnMaterialData(Class<? extends MaterialData> clazz, MaterialData data) {
         GlowServer.logger.warning("Wrong MaterialData for " + getMaterial() + " (" + getClass().getSimpleName() + "): expected " + clazz.getSimpleName() + ", got " + data);
@@ -258,6 +267,7 @@ public class BlockType extends ItemType {
     /**
      * Gets the BlockFace opposite of the direction the location is facing.
      * Usually used to set the way container blocks face when being placed.
+     *
      * @param location Location to get opposite of
      * @param inverted If up/down should be used
      * @return Opposite BlockFace or EAST if pitch is invalid
