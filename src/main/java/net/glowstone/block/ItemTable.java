@@ -1,6 +1,7 @@
 package net.glowstone.block;
 
 import net.glowstone.block.blocktype.*;
+import net.glowstone.block.itemtype.ItemFlintAndSteel;
 import net.glowstone.block.itemtype.ItemPlaceAs;
 import net.glowstone.block.itemtype.ItemSign;
 import net.glowstone.block.itemtype.ItemType;
@@ -120,6 +121,7 @@ public final class ItemTable {
         reg(Material.ENCHANTMENT_TABLE, new BlockEnchantmentTable());
         reg(Material.ANVIL, new BlockAnvil());
         reg(Material.BREWING_STAND, new BlockBrewingStand());
+        reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());
 
         reg(Material.SIGN, new ItemSign());
         reg(Material.REDSTONE, new ItemPlaceAs(Material.REDSTONE_WIRE));
