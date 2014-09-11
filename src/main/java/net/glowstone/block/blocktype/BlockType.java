@@ -162,7 +162,7 @@ public class BlockType extends ItemType {
      * @param newType The new type of the changed block
      * @param newData The new data of the changed block
      */
-    public void onNearBlockChanged(GlowBlock block, BlockFace position, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
+    public void onNearBlockChanges(GlowBlock block, BlockFace position, GlowBlock changingBlock, Material oldType, byte oldData, Material newType, byte newData) {
 
     }
 
