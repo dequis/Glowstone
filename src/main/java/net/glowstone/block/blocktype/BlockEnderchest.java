@@ -19,6 +19,7 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
 public class BlockEnderchest extends BlockType {
+
     public BlockEnderchest() {
         setDrops(new ItemStack(Material.OBSIDIAN, 8));
     }
@@ -52,12 +53,10 @@ public class BlockEnderchest extends BlockType {
 
         MaterialData data = state.getData();
         if (data instanceof EnderChest) {
-            // todo: determine facing direction
-            ((EnderChest) data).setFacingDirection(BlockFace.EAST);
+            ((EnderChest) data).setFacingDirection(getOppositeBlockFace(player.getLocation(), false));
             state.setData(data);
         } else {
-            // complain?
-            GlowServer.logger.warning("Placing EnderChest: MaterialData was of wrong type");
+            warnMaterialData(EnderChest.class, data);
         }
     }
 }

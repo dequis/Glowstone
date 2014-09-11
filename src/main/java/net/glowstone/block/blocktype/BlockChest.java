@@ -31,12 +31,10 @@ public class BlockChest extends BlockType {
 
         MaterialData data = state.getData();
         if (data instanceof Chest) {
-            // todo: determine facing direction
-            ((Chest) data).setFacingDirection(BlockFace.EAST);
+            ((Chest) data).setFacingDirection(getOppositeBlockFace(player.getLocation(), false));
             state.setData(data);
         } else {
-            // complain?
-            GlowServer.logger.warning("Placing Chest: MaterialData was of wrong type");
+            warnMaterialData(Chest.class, data);
         }
     }
     

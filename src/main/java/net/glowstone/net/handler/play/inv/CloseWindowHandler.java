@@ -16,6 +16,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 
 public final class CloseWindowHandler implements MessageHandler<GlowSession, CloseWindowMessage> {
+    @Override
     public void handle(GlowSession session, CloseWindowMessage message) {
         final GlowPlayer player = session.getPlayer();
 
