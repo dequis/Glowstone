@@ -195,14 +195,14 @@ public final class GlowBlock implements Block {
     public boolean setTypeIdAndData(int type, byte data, boolean applyPhysics) {
         Material oldTypeId = getType();
         byte oldData = getData();
-        
+
         chunk.setType(x & 0xf, z & 0xf, y, type);
         chunk.setMetaData(x & 0xf, z & 0xf, y, data);
-        
+
         if (applyPhysics) {
             applyPhysics(oldTypeId, type, oldData, data);
         }
-        
+
         BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, type, data);
         for (GlowPlayer p : getWorld().getRawPlayers()) {
             p.sendBlockChange(bcmsg);
@@ -392,7 +392,9 @@ public final class GlowBlock implements Block {
                 notifyType.onNearBlockChanges(notify, face.getOppositeFace(), this, oldType, oldData, newType, newData);
         }
 
-        itemTable.getBlock(oldType).onGoingToChange(this, oldType, oldData, newType, newData);
+        BlockType type = itemTable.getBlock(oldType);
+        if (type != null)
+            type.onGoingToChange(this, oldType, oldData, newType, newData);
     }
 
     private static final BlockFace[] surroundingFaces = new BlockFace[]{BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
