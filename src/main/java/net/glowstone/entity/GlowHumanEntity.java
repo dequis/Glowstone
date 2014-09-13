@@ -318,7 +318,6 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         return view;
     }
 
-    @Override
     public InventoryView openBlockWindow(Location location, boolean force, Material material, InventoryType inventorytype) {
         if (location == null) {
             location = getLocation();
