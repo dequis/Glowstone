@@ -33,9 +33,9 @@ public class BlockFalling extends BlockType {
         Block below = me.getRelative(BlockFace.DOWN);
         switch (below.getType()) {
             case AIR:
-                FIRE:
-                WATER:
-                LAVA:
+                case FIRE:
+                case WATER:
+                case LAVA:
                 transformToFallingEntity(me);
         }
     }
