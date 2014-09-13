@@ -21,7 +21,7 @@ public class BlockDropper extends BlockDispenser {
     public TileEntity createTileEntity(GlowChunk chunk, int cx, int cy, int cz) {
         return new TEDropper(chunk.getBlock(cx, cy, cz));
     }
-    
+
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
         return player.openBlockWindow(block.getLocation(), false, Material.DROPPER, InventoryType.DROPPER) != null;

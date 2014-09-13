@@ -19,11 +19,11 @@ public class BlockAnvil extends BlockType {
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
         return player.openBlockWindow(block.getLocation(), false, Material.ANVIL, InventoryType.ANVIL) != null;
     }
-    
+
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         state.getBlock().getWorld().playSound(state.getBlock().getLocation(), Sound.ANVIL_LAND, 1, 0.8F);
     }
-    
+
 }

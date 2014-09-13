@@ -1363,18 +1363,18 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         invMonitor = new InventoryMonitor(getOpenInventory());
         int viewId = invMonitor.getId();
         if (viewId != 0) {
-        	int size = view.getTopInventory().getSize();
+            int size = view.getTopInventory().getSize();
             String title = view.getTitle();
             boolean defaultTitle = view.getType().getDefaultTitle().equals(title);
             if (view.getTopInventory() instanceof PlayerInventory && defaultTitle) {
                 title = ((PlayerInventory) view.getTopInventory()).getHolder().getName();
             }
-            
-			if (view.getType() == InventoryType.WORKBENCH || view.getType() == InventoryType.ENCHANTING || view.getType() == InventoryType.ANVIL) {
-				size = 0;
-            }     
-			
-			Message open = new OpenWindowMessage(viewId, invMonitor.getType(), title, size);
+
+            if (view.getType() == InventoryType.WORKBENCH || view.getType() == InventoryType.ENCHANTING || view.getType() == InventoryType.ANVIL) {
+                size = 0;
+            }
+
+            Message open = new OpenWindowMessage(viewId, invMonitor.getType(), title, size);
             session.send(open);
         }
 
@@ -1540,18 +1540,16 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
     }
 
-	@Override
-	public InventoryView openEnchanting(Location arg0, boolean arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public InventoryView openEnchanting(Location arg0, boolean arg1) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public InventoryView openWorkbench(Location arg0, boolean arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
+    @Override
+    public InventoryView openWorkbench(Location arg0, boolean arg1) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }
