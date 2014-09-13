@@ -92,7 +92,7 @@ public final class ItemTable {
         reg(Material.DARK_OAK_FENCE_GATE, new BlockFenceGate());
         reg(Material.JUNGLE_FENCE_GATE, new BlockFenceGate());
         reg(Material.SPRUCE_FENCE_GATE, new BlockFenceGate());
-        reg(Material.TRAP_DOOR, new BlockOpenable());
+        reg(Material.TRAP_DOOR, new BlockTrapDoor());
         reg(Material.FURNACE, new BlockFurnace());
         reg(Material.LEVER, new BlockLever());
         reg(Material.HOPPER, new BlockHopper());
