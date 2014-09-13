@@ -1660,16 +1660,4 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
     }
 
-    @Override
-    public InventoryView openEnchanting(Location arg0, boolean arg1) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public InventoryView openWorkbench(Location arg0, boolean arg1) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

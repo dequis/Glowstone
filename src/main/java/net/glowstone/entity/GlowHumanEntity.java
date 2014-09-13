@@ -318,6 +318,16 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         return view;
     }
 
+    @Override
+    public InventoryView openWorkbench(Location location, boolean force) {
+        return openBlockWindow(location, force, Material.WORKBENCH, InventoryType.WORKBENCH);
+    }
+
+    @Override
+    public InventoryView openEnchanting(Location location, boolean force) {
+        return openBlockWindow(location, force, Material.ENCHANTMENT_TABLE, InventoryType.ENCHANTING);
+    }
+
     public InventoryView openBlockWindow(Location location, boolean force, Material material, InventoryType inventorytype) {
         if (location == null) {
             location = getLocation();
