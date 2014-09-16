@@ -13,7 +13,6 @@ import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
-import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
@@ -421,6 +420,21 @@ public final class GlowWorld implements World {
             }
         }
     }
+
+    /**
+     * Calculates how much the rays from the location to the entity's bounding box is blocked.
+     * @param location The location for the rays to start
+     * @param entity The entity that's bounding box is the ray's end point
+     * @return a value between 0 and 1, where 0 = all rays blocked and 1 = all rays unblocked
+     */
+    public float rayTrace(Location location, GlowEntity entity) {
+        /**
+         * To calculate this step through the entity's bounding box and check whether the ray to the point in the bounding box is blocked.
+         * Return (unblockedRays / allRays)
+         */
+        return 0;
+    }
+
 
     /**
      * Gets the entity manager.

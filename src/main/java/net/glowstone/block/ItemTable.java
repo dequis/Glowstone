@@ -122,6 +122,7 @@ public final class ItemTable {
         reg(Material.ANVIL, new BlockAnvil());
         reg(Material.BREWING_STAND, new BlockBrewingStand());
         reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());
+        reg(Material.TNT, new BlockTNT());
 
         reg(Material.SIGN, new ItemSign());
         reg(Material.REDSTONE, new ItemPlaceAs(Material.REDSTONE_WIRE));
