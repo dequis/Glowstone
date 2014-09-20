@@ -4,6 +4,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import net.glowstone.command.ColorCommand;
 import net.glowstone.command.TellrawCommand;
+import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.CraftingManager;
 import net.glowstone.inventory.GlowInventory;
@@ -76,6 +77,7 @@ public final class GlowServer implements Server {
     public static void main(String[] args) {
         try {
             ConfigurationSerialization.registerClass(GlowOfflinePlayer.class);
+            GlowPotionEffect.register();
 
             // parse arguments and read config
             final ServerConfig config = parseArguments(args);
@@ -261,7 +263,7 @@ public final class GlowServer implements Server {
     /**
      * An empty player array used for deprecated getOnlinePlayers.
      */
-    private final Player[] EMPTY_PLAYER_ARRAY = new Player[0];
+    private final Player[] emptyPlayerArray = new Player[0];
 
     /**
      * The server's default game mode
@@ -383,7 +385,7 @@ public final class GlowServer implements Server {
             address = new InetSocketAddress(ip, port);
         }
 
-        logger.log(Level.INFO, "Binding to address: {0}...", address);
+        logger.info("Binding to address: " + address + "...");
         ChannelFuture future = networkServer.bind(address);
         Channel channel = future.awaitUninterruptibly().channel();
         if (!channel.isActive()) {
@@ -788,7 +790,7 @@ public final class GlowServer implements Server {
     @Override
     @Deprecated
     public Player[] _INVALID_getOnlinePlayers() {
-        return getOnlinePlayers().toArray(EMPTY_PLAYER_ARRAY);
+        return getOnlinePlayers().toArray(emptyPlayerArray);
     }
 
     @Override
@@ -1049,7 +1051,6 @@ public final class GlowServer implements Server {
         }
         if (worlds.removeWorld(world)) {
             world.unload();
-            EventFactory.onWorldUnload(world);
             return true;
         }
         return false;

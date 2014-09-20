@@ -11,6 +11,7 @@ import net.glowstone.util.NibbleArray;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.event.world.ChunkUnloadEvent;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -320,6 +321,10 @@ public final class GlowChunk implements Chunk {
         }
 
         if (save && !world.getChunkManager().performSave(this)) {
+            return false;
+        }
+
+        if (EventFactory.callEvent(new ChunkUnloadEvent(this)).isCancelled()) {
             return false;
         }
 
@@ -659,53 +664,53 @@ public final class GlowChunk implements Chunk {
             }
         }
 
-        // break out early if there's nothing to send
-        if (sections == null || sectionBitmask == 0) {
-            return ChunkDataMessage.empty(x, z);
+        // calculate how big the data will need to be
+        int byteSize = 0;
+
+        if (sections != null) {
+            final int numBlocks = WIDTH * HEIGHT * SEC_DEPTH;
+            int sectionSize = numBlocks * 5 / 2;  // (data and metadata combo) * 2 + blockLight/2
+            if (skylight) {
+                sectionSize += numBlocks / 2;  // + skyLight/2
+            }
+            byteSize += sectionCount * sectionSize;
         }
 
-        // calculate how big the data will need to be
-        final int numBlocks = WIDTH * HEIGHT * SEC_DEPTH;
-        int sectionSize = numBlocks * 5 / 2;  // (data and metadata combo) * 2 + blockLight/2
-        if (skylight) {
-            sectionSize += numBlocks / 2;  // + skyLight/2
-        }
-        int byteSize = sectionCount * sectionSize;
         if (entireChunk) {
             byteSize += 256;  // + biomes
         }
 
-        // get the list of sections
-        ChunkSection[] sendSections = new ChunkSection[sectionCount];
-        int pos = 0;
-        for (int i = 0, mask = 1; i < sections.length; ++i, mask <<= 1) {
-            if ((sectionBitmask & mask) != 0) {
-                sendSections[pos++] = sections[i];
-            }
-        }
-
-        // fill up the data
         byte[] tileData = new byte[byteSize];
-        pos = 0;
+        int pos = 0;
 
-        for (ChunkSection sec : sendSections) {
-            for (char t : sec.types) {
-                tileData[pos++] = (byte) (t & 0xff);
-                tileData[pos++] = (byte) (t >> 8);
+        if (sections != null) {
+            // get the list of sections
+            ChunkSection[] sendSections = new ChunkSection[sectionCount];
+            for (int i = 0, j = 0, mask = 1; i < sections.length; ++i, mask <<= 1) {
+                if ((sectionBitmask & mask) != 0) {
+                    sendSections[j++] = sections[i];
+                }
             }
-        }
 
-        for (ChunkSection sec : sendSections) {
-            byte[] blockLight = sec.blockLight.getRawData();
-            System.arraycopy(blockLight, 0, tileData, pos, blockLight.length);
-            pos += blockLight.length;
-        }
-
-        if (skylight) {
             for (ChunkSection sec : sendSections) {
-                byte[] skyLight = sec.skyLight.getRawData();
-                System.arraycopy(skyLight, 0, tileData, pos, skyLight.length);
-                pos += skyLight.length;
+                for (char t : sec.types) {
+                    tileData[pos++] = (byte) (t & 0xff);
+                    tileData[pos++] = (byte) (t >> 8);
+                }
+            }
+
+            for (ChunkSection sec : sendSections) {
+                byte[] blockLight = sec.blockLight.getRawData();
+                System.arraycopy(blockLight, 0, tileData, pos, blockLight.length);
+                pos += blockLight.length;
+            }
+
+            if (skylight) {
+                for (ChunkSection sec : sendSections) {
+                    byte[] skyLight = sec.skyLight.getRawData();
+                    System.arraycopy(skyLight, 0, tileData, pos, skyLight.length);
+                    pos += skyLight.length;
+                }
             }
         }
 

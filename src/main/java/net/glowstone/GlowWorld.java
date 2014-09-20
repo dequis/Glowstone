@@ -11,8 +11,10 @@ import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
+import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
+import org.bukkit.event.world.*;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemStack;
@@ -37,7 +39,7 @@ public final class GlowWorld implements World {
     /**
      * The metadata store class for worlds.
      */
-    private final static class WorldMetadataStore extends MetadataStoreBase<World> implements MetadataStore<World> {
+    private static final class WorldMetadataStore extends MetadataStoreBase<World> implements MetadataStore<World> {
         @Override
         protected String disambiguate(World subject, String metadataKey) {
             return subject.getName() + ":" + metadataKey;
@@ -47,7 +49,7 @@ public final class GlowWorld implements World {
     /**
      * The metadata store for world objects.
      */
-    private final static MetadataStore<World> metadata = new WorldMetadataStore();
+    private static final MetadataStore<World> metadata = new WorldMetadataStore();
 
     /**
      * The length in ticks of one Minecraft day.
@@ -258,8 +260,8 @@ public final class GlowWorld implements World {
 
         // begin loading spawn area
         spawnChunkLock = newChunkLock("spawn");
-        EventFactory.onWorldInit(this);
-        server.getLogger().log(Level.INFO, "Preparing spawn for {0}...", name);
+        EventFactory.callEvent(new WorldInitEvent(this));
+        server.getLogger().info("Preparing spawn for " + name + "...");
 
         // determine the spawn location if we need to
         if (spawnLocation == null) {
@@ -298,14 +300,14 @@ public final class GlowWorld implements World {
 
                     if (System.currentTimeMillis() >= loadTime + 1000) {
                         int progress = 100 * current / total;
-                        GlowServer.logger.log(Level.INFO, "Preparing spawn for {0}: {1}%", new Object[]{name, progress});
+                        GlowServer.logger.info("Preparing spawn for " + name + ": " + progress + "%");
                         loadTime = System.currentTimeMillis();
                     }
                 }
             }
         }
-        server.getLogger().log(Level.INFO, "Preparing spawn for {0}: done", name);
-        EventFactory.onWorldLoad(this);
+        server.getLogger().info("Preparing spawn for " + name + ": done");
+        EventFactory.callEvent(new WorldLoadEvent(this));
     }
 
     @Override
@@ -492,7 +494,7 @@ public final class GlowWorld implements World {
     public boolean setSpawnLocation(int x, int y, int z) {
         Location oldSpawn = spawnLocation;
         spawnLocation = new Location(this, x, y, z);
-        EventFactory.onSpawnChange(this, oldSpawn);
+        EventFactory.callEvent(new SpawnChangeEvent(this, oldSpawn));
         return true;
     }
 
@@ -685,7 +687,7 @@ public final class GlowWorld implements World {
     }
 
     public void save(boolean async) {
-        EventFactory.onWorldSave(this);
+        EventFactory.callEvent(new WorldSaveEvent(this));
 
         // save metadata
         writeWorldData(async);
@@ -1000,14 +1002,23 @@ public final class GlowWorld implements World {
         return (LivingEntity) spawn(loc, type.getEntityClass());
     }
 
+    private GlowLightningStrike strikeLightningFireEvent(final Location loc, final boolean effect) {
+        final GlowLightningStrike strike = new GlowLightningStrike(loc, effect);
+        final LightningStrikeEvent event = new LightningStrikeEvent(this, strike);
+        if (EventFactory.callEvent(event).isCancelled()) {
+            return null;
+        }
+        return strike;
+    }
+
     @Override
     public GlowLightningStrike strikeLightning(Location loc) {
-        return new GlowLightningStrike(loc, false);
+        return strikeLightningFireEvent(loc, false);
     }
 
     @Override
     public GlowLightningStrike strikeLightningEffect(Location loc) {
-        return new GlowLightningStrike(loc, true);
+        return strikeLightningFireEvent(loc, true);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1183,7 +1194,7 @@ public final class GlowWorld implements World {
     public void playSound(Location location, Sound sound, float volume, float pitch) {
         if (location == null || sound == null) return;
 
-        final int radiusSquared = 24 * 24; // todo: verify this radius
+        final double radiusSquared = Math.pow(Math.min(volume * 16, 16), 2);
         for (Player player : getRawPlayers()) {
             if (player.getLocation().distanceSquared(location) <= radiusSquared) {
                 player.playSound(location, sound, volume, pitch);
@@ -1230,6 +1241,7 @@ public final class GlowWorld implements World {
      * @return true if successful
      */
     public boolean unload() {
+        EventFactory.callEvent(new WorldUnloadEvent(this));
         try {
             storageProvider.getChunkIoService().unload();
         } catch (IOException e) {
