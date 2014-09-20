@@ -2,7 +2,6 @@ package net.glowstone.net.handler.play.inv;
 
 import com.flowpowered.networking.MessageHandler;
 
-import net.glowstone.GlowServer;
 import net.glowstone.block.state.GlowChest;
 import net.glowstone.block.state.GlowEnderChest;
 import net.glowstone.entity.GlowPlayer;
@@ -31,24 +30,23 @@ public final class CloseWindowHandler implements MessageHandler<GlowSession, Clo
             }
             player.setItemOnCursor(null);
         }
-        
-        if (player.GetBindChest() != null){  
-        	World world = player.getWorld();
-        	Block bl = world.getBlockAt(player.GetBindChest());
-        	if (bl != null){
-	        	if (bl.getType() == Material.CHEST){
-	        	bl.getWorld().playSound(bl.getLocation(), Sound.CHEST_CLOSE, 1, 1);
-		       	((GlowChest) bl.getState()).setState((byte)0);
-		       	((GlowChest) bl.getState()).ChestAnimation((byte)0);
-	        	player.SetBindChest(null);
-	        	}
-	        	else if (bl.getType() == Material.ENDER_CHEST){
-	        	bl.getWorld().playSound(bl.getLocation(), Sound.CHEST_CLOSE, 1, 1);
-	        	((GlowEnderChest) bl.getState()).setState((byte)0);
-			    ((GlowEnderChest) bl.getState()).ChestAnimation((byte)0);
-		        player.SetBindChest(null);
-	        	}
-        	}
+
+        if (player.GetBindChest() != null) {
+            World world = player.getWorld();
+            Block bl = world.getBlockAt(player.GetBindChest());
+            if (bl != null) {
+                if (bl.getType() == Material.CHEST) {
+                    bl.getWorld().playSound(bl.getLocation(), Sound.CHEST_CLOSE, 1, 1);
+                    ((GlowChest) bl.getState()).setState((byte) 0);
+                    ((GlowChest) bl.getState()).ChestAnimation((byte) 0);
+                    player.SetBindChest(null);
+                } else if (bl.getType() == Material.ENDER_CHEST) {
+                    bl.getWorld().playSound(bl.getLocation(), Sound.CHEST_CLOSE, 1, 1);
+                    ((GlowEnderChest) bl.getState()).setState((byte) 0);
+                    ((GlowEnderChest) bl.getState()).ChestAnimation((byte) 0);
+                    player.SetBindChest(null);
+                }
+            }
         }
     }
 }

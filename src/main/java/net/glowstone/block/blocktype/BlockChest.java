@@ -1,7 +1,6 @@
 package net.glowstone.block.blocktype;
 
 import net.glowstone.GlowChunk;
-import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.TEChest;
@@ -12,7 +11,6 @@ import net.glowstone.entity.GlowPlayer;
 
 import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.NoteBlock;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Chest;
 import org.bukkit.material.MaterialData;
@@ -37,22 +35,22 @@ public class BlockChest extends BlockType {
             warnMaterialData(Chest.class, data);
         }
     }
-    
+
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
-	TileEntity te = block.getTileEntity();
-	if (te instanceof TEContainer) {
-		player.openInventory(((TEContainer) te).getInventory());
-		//Only open when chest is closed player interacts, only close when player closes chest inventory
-		if (((GlowChest) block.getState()).getState() == 0){
-			block.getWorld().playSound(block.getLocation(), Sound.CHEST_OPEN, 1, 1);
-			player.SetBindChest(block.getLocation());
-			((GlowChest) block.getState()).setState((byte)1);
-			((GlowChest) block.getState()).ChestAnimation((byte)1);
-		}
-		return true;
-	}
-	return false;
-	}
-    
+        TileEntity te = block.getTileEntity();
+        if (te instanceof TEContainer) {
+            player.openInventory(((TEContainer) te).getInventory());
+            //Only open when chest is closed player interacts, only close when player closes chest inventory
+            if (((GlowChest) block.getState()).getState() == 0) {
+                block.getWorld().playSound(block.getLocation(), Sound.CHEST_OPEN, 1, 1);
+                player.SetBindChest(block.getLocation());
+                ((GlowChest) block.getState()).setState((byte) 1);
+                ((GlowChest) block.getState()).ChestAnimation((byte) 1);
+            }
+            return true;
+        }
+        return false;
+    }
+
 }

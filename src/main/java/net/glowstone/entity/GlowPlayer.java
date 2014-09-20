@@ -232,7 +232,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * The player's base walking speed.
      */
     private float walkSpeed = 0.2f;
-    
+
     /**
      * If the player currently has an open chest.
      */
@@ -1263,17 +1263,17 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public Location GetBindChest() {
-    	return bindchest;
+        return bindchest;
     }
-    
+
     public void SetBindChest(Location loc) {
-    	bindchest = loc;
+        bindchest = loc;
     }
-    
+
     public void playChestAnimation(Location loc, byte state) {
         session.send(new BlockActionMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), (byte) 1, state, Material.CHEST.getId()));
     }
-    
+
     @Override
     public void playEffect(Location loc, Effect effect, int data) {
         int id = effect.getId();

@@ -13,7 +13,7 @@ import org.bukkit.inventory.Inventory;
 
 public class GlowChest extends GlowBlockState implements Chest {
 
-	public int state;
+    public int state;
     public GlowChest(GlowBlock block) {
         super(block);
         state = 0;
@@ -33,16 +33,16 @@ public class GlowChest extends GlowBlockState implements Chest {
         // todo: handle double chests
         return getBlockInventory();
     }
-    
+
     //closed 0, open 1
     public int getState() {
         return this.state;
     }
-    
+
     public void setState(Byte state) {
         this.state = state;
     }
-    
+
     public boolean ChestAnimation(byte state) {
         if (getBlock().getType() != Material.CHEST) {
             return false;
@@ -56,5 +56,5 @@ public class GlowChest extends GlowBlockState implements Chest {
         }
         return true;
     }
-    
+
 }
