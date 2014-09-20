@@ -13,7 +13,8 @@ import org.bukkit.inventory.Inventory;
 
 public class GlowChest extends GlowBlockState implements Chest {
 
-    public int state;
+    private int state;
+
     public GlowChest(GlowBlock block) {
         super(block);
         state = 0;
