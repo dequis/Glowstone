@@ -44,7 +44,7 @@ public class GlowChest extends GlowBlockState implements Chest {
         this.state = state;
     }
 
-    public boolean ChestAnimation(byte state) {
+    public boolean playChestAnimation(byte state) {
         if (getBlock().getType() != Material.CHEST) {
             return false;
         }

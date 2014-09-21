@@ -44,9 +44,9 @@ public class BlockChest extends BlockType {
             //Only open when chest is closed player interacts, only close when player closes chest inventory
             if (((GlowChest) block.getState()).getState() == 0) {
                 block.getWorld().playSound(block.getLocation(), Sound.CHEST_OPEN, 1, 1);
-                player.SetBindChest(block.getLocation());
+                player.setBindChest(block.getLocation());
                 ((GlowChest) block.getState()).setState((byte) 1);
-                ((GlowChest) block.getState()).ChestAnimation((byte) 1);
+                ((GlowChest) block.getState()).playChestAnimation((byte) 1);
             }
             return true;
         }

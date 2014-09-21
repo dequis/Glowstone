@@ -31,20 +31,20 @@ public final class CloseWindowHandler implements MessageHandler<GlowSession, Clo
             player.setItemOnCursor(null);
         }
 
-        if (player.GetBindChest() != null) {
+        if (player.getBindChest() != null) {
             World world = player.getWorld();
-            Block bl = world.getBlockAt(player.GetBindChest());
+            Block bl = world.getBlockAt(player.getBindChest());
             if (bl != null) {
                 if (bl.getType() == Material.CHEST) {
                     bl.getWorld().playSound(bl.getLocation(), Sound.CHEST_CLOSE, 1, 1);
                     ((GlowChest) bl.getState()).setState((byte) 0);
-                    ((GlowChest) bl.getState()).ChestAnimation((byte) 0);
-                    player.SetBindChest(null);
+                    ((GlowChest) bl.getState()).playChestAnimation((byte) 0);
+                    player.setBindChest(null);
                 } else if (bl.getType() == Material.ENDER_CHEST) {
                     bl.getWorld().playSound(bl.getLocation(), Sound.CHEST_CLOSE, 1, 1);
                     ((GlowEnderChest) bl.getState()).setState((byte) 0);
-                    ((GlowEnderChest) bl.getState()).ChestAnimation((byte) 0);
-                    player.SetBindChest(null);
+                    ((GlowEnderChest) bl.getState()).playChestAnimation((byte) 0);
+                    player.setBindChest(null);
                 }
             }
         }

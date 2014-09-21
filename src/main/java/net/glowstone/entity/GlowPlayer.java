@@ -1262,11 +1262,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new BlockActionMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), instrument, note, Material.NOTE_BLOCK.getId()));
     }
 
-    public Location GetBindChest() {
+    public Location getBindChest() {
         return bindchest;
     }
 
-    public void SetBindChest(Location loc) {
+    public void setBindChest(Location loc) {
         bindchest = loc;
     }
 
