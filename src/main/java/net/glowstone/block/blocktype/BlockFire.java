@@ -13,7 +13,7 @@ public class BlockFire extends BlockDropless {
     }
 
     @Override
-    public void onNearBlockChanges(GlowBlock me, BlockFace position, GlowBlock other, Material oldType, byte oldData, Material newType, byte newData) {
+    public void onNearBlockChanged(GlowBlock me, BlockFace position, GlowBlock other, Material oldType, byte oldData, Material newType, byte newData) {
         if (position == BlockFace.DOWN)
             updatePhysics(me);
     }

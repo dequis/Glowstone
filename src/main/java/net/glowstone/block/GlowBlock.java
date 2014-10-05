@@ -389,12 +389,12 @@ public final class GlowBlock implements Block {
             GlowBlock notify = this.getRelative(face);
             BlockType notifyType = itemTable.getBlock(notify.getTypeId());
             if (notifyType != null)
-                notifyType.onNearBlockChanges(notify, face.getOppositeFace(), this, oldType, oldData, newType, newData);
+                notifyType.onNearBlockChanged(notify, face.getOppositeFace(), this, oldType, oldData, newType, newData);
         }
 
         BlockType type = itemTable.getBlock(oldType);
         if (type != null)
-            type.onGoingToChange(this, oldType, oldData, newType, newData);
+            type.onBlockChanged(this, oldType, oldData, newType, newData);
     }
 
     private static final BlockFace[] surroundingFaces = new BlockFace[]{BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
