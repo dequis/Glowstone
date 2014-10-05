@@ -162,7 +162,7 @@ public class BlockType extends ItemType {
      * @param newType The new type of the changed block
      * @param newData The new data of the changed block
      */
-    public void onNearBlockChanges(GlowBlock block, BlockFace position, GlowBlock changingBlock, Material oldType, byte oldData, Material newType, byte newData) {
+    public void onNearBlockChanged(GlowBlock block, BlockFace position, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
 
     }
 
@@ -186,32 +186,6 @@ public class BlockType extends ItemType {
      * Called right before {@link #onBlockChanged(net.glowstone.block.GlowBlock, org.bukkit.Material, byte, org.bukkit.Material, byte) #onBlockChanged()} is called.
      * This is only called, if a player actually breaks a block. If you want to do sth. whenever the block may disappear (f.e. through plugins, see #onBlockChanged().
      *
-     * @param block The block being dug
-     * @param player The player digging
-     * @param itemInHand The item in the hand while the player broke the block
-     */
-    public void onBreak(GlowBlock block, GlowPlayer player, ItemStack itemInHand) {
-
-    }
-
-    /**
-     * Called when this block is going to changed and physics should be applied.
-     * This is called whenever {@link net.glowstone.block.GlowBlock#setTypeIdAndData(int, byte, boolean) GlowBlock#setType or #setData} is called with physics enabled.
-     * So this is also called from plugins and other intern methods.
-     * @param block The block being changed
-     * @param oldType The old Material
-     * @param oldData The old data
-     * @param newType The new Material
-     * @param data The new data
-     */
-    public void onGoingToChange(GlowBlock block, Material oldType, byte oldData, Material newType, byte data) {
-
-    }
-
-    /**
-     * Called when a player breaks this block.
-     * Called right before {@link #onGoingToChange(net.glowstone.block.GlowBlock, org.bukkit.Material, byte, org.bukkit.Material, byte) #onGoingToChange()} is called.
-     * This is only called, if a player actually breaks a block. If you want to do sth. whenever the block may disappear (f.e. through plugins, see #onGoingToChange().
      * @param block The block being dug
      * @param player The player digging
      * @param itemInHand The item in the hand while the player broke the block
