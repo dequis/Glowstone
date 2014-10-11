@@ -8,7 +8,9 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-public class BlockSnow extends BlockType {
+import java.util.Collection;
+
+public class BlockSnow extends BlockNeedsAttached {
 
     @Override
     public boolean canAbsorb(GlowBlock block, BlockFace face, ItemStack holding) {
@@ -36,5 +38,10 @@ public class BlockSnow extends BlockType {
             // place first snow layer
             state.setType(Material.SNOW);
         }
+    }
+
+    @Override
+    public Collection<ItemStack> getDrops(GlowBlock me) {
+        return BlockDropless.EMPTY_STACK;
     }
 }

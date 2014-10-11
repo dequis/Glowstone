@@ -5,7 +5,9 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 
-public class BlockFire extends BlockDropless {
+import java.util.Collection;
+
+public class BlockFire extends BlockNeedsAttached {
 
     @Override
     public boolean canOverride(GlowBlock block, BlockFace face, ItemStack holding) {
@@ -22,5 +24,10 @@ public class BlockFire extends BlockDropless {
     public void updatePhysics(GlowBlock me) {
         if (me.getRelative(BlockFace.DOWN).getType() == Material.AIR)
             me.setType(Material.AIR);
+    }
+
+    @Override
+    public Collection<ItemStack> getDrops(GlowBlock block) {
+        return BlockDropless.EMPTY_STACK;
     }
 }
