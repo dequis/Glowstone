@@ -31,12 +31,16 @@ public class BlockFalling extends BlockType {
     @Override
     public void updatePhysics(GlowBlock me) {
         Block below = me.getRelative(BlockFace.DOWN);
-        if (below.getType() == Material.AIR) {
-            transformToFallingEntity(me);
+        switch (below.getType()) {
+            case AIR:
+                FIRE:
+                WATER:
+                LAVA:
+                transformToFallingEntity(me);
         }
     }
 
-    private void transformToFallingEntity(GlowBlock me) {
+    protected void transformToFallingEntity(GlowBlock me) {
         me.setType(Material.AIR);
         me.getWorld().spawnFallingBlock(me.getLocation(), drop, (byte) 0);
     }

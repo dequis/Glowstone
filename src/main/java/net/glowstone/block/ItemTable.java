@@ -59,6 +59,7 @@ public final class ItemTable {
         reg(Material.DIRT, new BlockDirectDrops(Material.DIRT));
         reg(Material.GRAVEL, new BlockGravel());
         reg(Material.SAND, new BlockFalling(Material.SAND));
+        reg(Material.ANVIL, new BlockAnvil());
         reg(Material.ICE, new BlockDropless());
         reg(Material.PACKED_ICE, new BlockDropless());
         reg(Material.SNOW, new BlockSnow());
@@ -154,6 +155,7 @@ public final class ItemTable {
 
     /**
      * Register a new, non-Vanilla ItemType. It will be assigned an ID automatically.
+     *
      * @param type the ItemType to register.
      */
     public void register(ItemType type) {
