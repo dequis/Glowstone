@@ -112,6 +112,11 @@ public final class GlowSession extends BasicSession {
     private GlowPlayer player;
 
     /**
+     * The player's online state.
+     */
+    private boolean playerOnline = false;
+
+    /**
      * The ID of the last ping message sent, used to ensure the client responded correctly.
      */
     private int pingMessageId;
@@ -295,7 +300,7 @@ public final class GlowSession extends BasicSession {
 
         player.getWorld().getRawPlayers().add(player);
 
-        player.setOnline();
+        playerOnline = true;
 
         GlowServer.logger.info(player.getName() + " [" + address + "] connected, UUID: " + player.getUniqueId());
 
@@ -318,6 +323,10 @@ public final class GlowSession extends BasicSession {
             }
         }
         send(new UserListItemMessage(UserListItemMessage.Action.ADD_PLAYER, entries));
+    }
+
+    public boolean isPlayerOnline() {
+        return this.playerOnline;
     }
 
     @Override
@@ -362,7 +371,7 @@ public final class GlowSession extends BasicSession {
 
             reason = event.getReason();
 
-            if (player.isOnline() && event.getLeaveMessage() != null) {
+            if (playerOnline && event.getLeaveMessage() != null) {
                 server.broadcastMessage(event.getLeaveMessage());
             }
         }
@@ -480,7 +489,7 @@ public final class GlowSession extends BasicSession {
 
         GlowServer.logger.info(player.getName() + " [" + address + "] lost connection");
 
-        if (player.isOnline()) {
+        if (playerOnline) {
             final String text = EventFactory.onPlayerQuit(player).getQuitMessage();
             if (text != null && !text.isEmpty()) {
                 server.broadcastMessage(text);
