@@ -1,5 +1,6 @@
 package net.glowstone.entity;
 
+import net.glowstone.constants.GlowPotionEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -95,10 +96,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     public void pulse() {
         super.pulse();
 
+        // invulnerability
         if (noDamageTicks > 0) {
             --noDamageTicks;
         }
 
+        // breathing
         Material mat = getEyeLocation().getBlock().getType();
         if (mat == Material.WATER || mat == Material.STATIONARY_WATER) {
             --airTicks;
@@ -111,32 +114,52 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             airTicks = maximumAir;
         }
 
-        // todo: tick down potion effects
+        // potion effects
+        List<PotionEffect> effects = new ArrayList<>(potionEffects.values());
+        for (PotionEffect effect : effects) {
+            // pulse effect
+            GlowPotionEffect type = (GlowPotionEffect) effect.getType();
+            type.pulse(this, effect);
+
+            if (effect.getDuration() > 0) {
+                // reduce duration and re-add
+                addPotionEffect(new PotionEffect(type, effect.getDuration() - 1, effect.getAmplifier(), effect.isAmbient()), true);
+            } else {
+                // remove
+                removePotionEffect(type);
+            }
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Properties
 
+    @Override
     public double getEyeHeight() {
-       return 0;
+        return 0;
     }
 
+    @Override
     public double getEyeHeight(boolean ignoreSneaking) {
         return getEyeHeight();
     }
 
+    @Override
     public Location getEyeLocation() {
         return getLocation().add(0, getEyeHeight(), 0);
     }
 
+    @Override
     public Player getKiller() {
         return null;
     }
 
+    @Override
     public boolean hasLineOfSight(Entity other) {
         return false;
     }
 
+    @Override
     public EntityEquipment getEquipment() {
         return null;
     }
@@ -144,50 +167,62 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     ////////////////////////////////////////////////////////////////////////////
     // Properties
 
+    @Override
     public int getNoDamageTicks() {
         return noDamageTicks;
     }
 
+    @Override
     public void setNoDamageTicks(int ticks) {
         noDamageTicks = ticks;
     }
 
+    @Override
     public int getMaximumNoDamageTicks() {
         return maxNoDamageTicks;
     }
 
+    @Override
     public void setMaximumNoDamageTicks(int ticks) {
         maxNoDamageTicks = ticks;
     }
 
+    @Override
     public int getRemainingAir() {
         return airTicks;
     }
 
+    @Override
     public void setRemainingAir(int ticks) {
         airTicks = Math.min(ticks, maximumAir);
     }
 
+    @Override
     public int getMaximumAir() {
         return maximumAir;
     }
 
+    @Override
     public void setMaximumAir(int ticks) {
         maximumAir = Math.max(0, ticks);
     }
 
+    @Override
     public boolean getRemoveWhenFarAway() {
         return removeDistance;
     }
 
+    @Override
     public void setRemoveWhenFarAway(boolean remove) {
         removeDistance = remove;
     }
 
+    @Override
     public boolean getCanPickupItems() {
         return pickupItems;
     }
 
+    @Override
     public void setCanPickupItems(boolean pickup) {
         pickupItems = pickup;
     }
@@ -223,14 +258,17 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return blocks;
     }
 
+    @Override
     public List<Block> getLineOfSight(HashSet<Byte> transparent, int maxDistance) {
         return getLineOfSight(transparent, maxDistance, 0);
     }
 
+    @Override
     public Block getTargetBlock(HashSet<Byte> transparent, int maxDistance) {
         return getLineOfSight(transparent, maxDistance, 1).get(0);
     }
 
+    @Override
     public List<Block> getLastTwoTargetBlocks(HashSet<Byte> transparent, int maxDistance) {
         return getLineOfSight(transparent, maxDistance, 2);
     }
@@ -238,43 +276,54 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     ////////////////////////////////////////////////////////////////////////////
     // Projectiles
 
+    @Override
     public Egg throwEgg() {
         return launchProjectile(Egg.class);
     }
 
+    @Override
     public Snowball throwSnowball() {
         return launchProjectile(Snowball.class);
     }
 
+    @Override
     public Arrow shootArrow() {
         return launchProjectile(Arrow.class);
     }
 
+    @Override
     public <T extends Projectile> T launchProjectile(Class<? extends T> projectile) {
         return launchProjectile(projectile, getLocation().getDirection());  // todo: multiply by some speed
     }
 
+    @Override
     public <T extends Projectile> T launchProjectile(Class<? extends T> projectile, Vector velocity) {
-        return null;
+        T entity = world.spawn(getEyeLocation(), projectile);
+        entity.setVelocity(velocity);
+        return entity;
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Health
 
+    @Override
     public double getHealth() {
         return health;
     }
 
+    @Override
     public void setHealth(double health) {
         if (health < 0) health = 0;
         if (health > maxHealth) health = maxHealth;
         this.health = health;
     }
 
+    @Override
     public void damage(double amount) {
         damage(amount, null);
     }
 
+    @Override
     public void damage(double amount, Entity source) {
         // todo: handle noDamageTicks
         lastDamage = amount;
@@ -282,22 +331,27 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         // todo: death, events, so on
     }
 
+    @Override
     public double getMaxHealth() {
         return maxHealth;
     }
 
+    @Override
     public void setMaxHealth(double health) {
         maxHealth = health;
     }
 
+    @Override
     public void resetMaxHealth() {
         maxHealth = 20;
     }
 
+    @Override
     public double getLastDamage() {
         return lastDamage;
     }
 
+    @Override
     public void setLastDamage(double damage) {
         lastDamage = damage;
     }
@@ -305,45 +359,55 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     ////////////////////////////////////////////////////////////////////////////
     // Invalid health methods
 
+    @Override
     public void _INVALID_damage(int amount) {
-        throw new UnsupportedOperationException("Invalid/deprecated method");
+        damage(amount);
     }
 
+    @Override
     public int _INVALID_getLastDamage() {
-        throw new UnsupportedOperationException("Invalid/deprecated method");
+        return (int) getLastDamage();
     }
 
+    @Override
     public void _INVALID_setLastDamage(int damage) {
-        throw new UnsupportedOperationException("Invalid/deprecated method");
+        setLastDamage(damage);
     }
 
+    @Override
     public void _INVALID_setMaxHealth(int health) {
-        throw new UnsupportedOperationException("Invalid/deprecated method");
+        setMaxHealth(health);
     }
 
+    @Override
     public int _INVALID_getMaxHealth() {
-        throw new UnsupportedOperationException("Invalid/deprecated method");
+        return (int) getMaxHealth();
     }
 
+    @Override
     public void _INVALID_damage(int amount, Entity source) {
-        throw new UnsupportedOperationException("Invalid/deprecated method");
+        damage(amount, source);
     }
 
+    @Override
     public int _INVALID_getHealth() {
-        throw new UnsupportedOperationException("Invalid/deprecated method");
+        return (int) getHealth();
     }
 
+    @Override
     public void _INVALID_setHealth(int health) {
-        throw new UnsupportedOperationException("Invalid/deprecated method");
+        setHealth(health);
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Potion effects
 
+    @Override
     public boolean addPotionEffect(PotionEffect effect) {
         return addPotionEffect(effect, false);
     }
 
+    @Override
     public boolean addPotionEffect(PotionEffect effect, boolean force) {
         if (potionEffects.containsKey(effect.getType())) {
             if (force) {
@@ -363,6 +427,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return true;
     }
 
+    @Override
     public boolean addPotionEffects(Collection<PotionEffect> effects) {
         boolean result = true;
         for (PotionEffect effect : effects) {
@@ -373,10 +438,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return result;
     }
 
+    @Override
     public boolean hasPotionEffect(PotionEffectType type) {
         return potionEffects.containsKey(type);
     }
 
+    @Override
     public void removePotionEffect(PotionEffectType type) {
         if (!hasPotionEffect(type)) return;
         potionEffects.remove(type);
@@ -388,6 +455,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }*/
     }
 
+    @Override
     public Collection<PotionEffect> getActivePotionEffects() {
         return Collections.unmodifiableCollection(potionEffects.values());
     }
@@ -395,18 +463,22 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     ////////////////////////////////////////////////////////////////////////////
     // Custom name
 
+    @Override
     public void setCustomName(String name) {
         customName = name;
     }
 
+    @Override
     public String getCustomName() {
         return customName;
     }
 
+    @Override
     public void setCustomNameVisible(boolean flag) {
         customNameVisible = flag;
     }
 
+    @Override
     public boolean isCustomNameVisible() {
         return customNameVisible;
     }
@@ -414,14 +486,17 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     ////////////////////////////////////////////////////////////////////////////
     // Leashes
 
+    @Override
     public boolean isLeashed() {
         return false;
     }
 
+    @Override
     public Entity getLeashHolder() throws IllegalStateException {
         return null;
     }
 
+    @Override
     public boolean setLeashHolder(Entity holder) {
         return false;
     }

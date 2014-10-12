@@ -122,7 +122,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         int z = Position.getIntZ(location);
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
-        result.add(new SpawnPlayerMessage(id, profile, x, y, z, yaw, pitch, 0, metadata.getEntryList()));
+        result.add(new SpawnPlayerMessage(id, profile.getUniqueId(), x, y, z, yaw, pitch, 0, metadata.getEntryList()));
 
         // head facing
         result.add(new EntityHeadRotationMessage(id, yaw));
@@ -142,9 +142,18 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         }
     }
 
+    /**
+     * Get this human entity's PlayerProfile with associated data.
+     * @return The PlayerProfile.
+     */
+    public final PlayerProfile getProfile() {
+        return profile;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Properties
 
+    @Override
     public String getName() {
         return profile.getName();
     }
@@ -154,26 +163,32 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         return profile.getUniqueId();
     }
 
+    @Override
     public boolean isSleeping() {
         return sleeping;
     }
 
+    @Override
     public int getSleepTicks() {
         return sleepingTicks;
     }
 
+    @Override
     public GameMode getGameMode() {
         return gameMode;
     }
 
+    @Override
     public void setGameMode(GameMode mode) {
         gameMode = mode;
     }
 
+    @Override
     public boolean isBlocking() {
         return false;
     }
 
+    @Override
     public int getExpToLevel() {
         throw new UnsupportedOperationException("Non-player HumanEntity has no level");
     }
@@ -186,54 +201,67 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     ////////////////////////////////////////////////////////////////////////////
     // Permissions
 
+    @Override
     public boolean isPermissionSet(String name) {
         return permissions.isPermissionSet(name);
     }
 
+    @Override
     public boolean isPermissionSet(Permission perm) {
         return permissions.isPermissionSet(perm);
     }
 
+    @Override
     public boolean hasPermission(String name) {
         return permissions.hasPermission(name);
     }
 
+    @Override
     public boolean hasPermission(Permission perm) {
         return permissions.hasPermission(perm);
     }
 
+    @Override
     public PermissionAttachment addAttachment(Plugin plugin) {
         return permissions.addAttachment(plugin);
     }
 
+    @Override
     public PermissionAttachment addAttachment(Plugin plugin, int ticks) {
         return permissions.addAttachment(plugin, ticks);
     }
 
+    @Override
     public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value) {
         return permissions.addAttachment(plugin, name, value);
     }
 
+    @Override
     public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value, int ticks) {
         return permissions.addAttachment(plugin, name, value, ticks);
     }
 
+    @Override
     public void removeAttachment(PermissionAttachment attachment) {
         permissions.removeAttachment(attachment);
     }
 
+    @Override
     public void recalculatePermissions() {
         permissions.recalculatePermissions();
     }
 
+    @Override
     public Set<PermissionAttachmentInfo> getEffectivePermissions() {
         return permissions.getEffectivePermissions();
     }
 
+    @Override
     public boolean isOp() {
         return isOp;
     }
 
+    @Override
     public void setOp(boolean value) {
         isOp = value;
         recalculatePermissions();
@@ -242,45 +270,55 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     ////////////////////////////////////////////////////////////////////////////
     // Inventory
 
+    @Override
     public GlowPlayerInventory getInventory() {
         return inventory;
     }
 
+    @Override
     public ItemStack getItemInHand() {
         return getInventory().getItemInHand();
     }
 
+    @Override
     public void setItemInHand(ItemStack item) {
         getInventory().setItemInHand(item);
     }
 
+    @Override
     public ItemStack getItemOnCursor() {
         return itemOnCursor;
     }
 
+    @Override
     public void setItemOnCursor(ItemStack item) {
         itemOnCursor = item;
     }
 
+    @Override
     public Inventory getEnderChest() {
         return enderChest;
     }
 
+    @Override
     public boolean setWindowProperty(InventoryView.Property prop, int value) {
         // nb: does not actually send anything
         return prop.getType() == inventoryView.getType();
     }
 
+    @Override
     public InventoryView getOpenInventory() {
         return inventoryView;
     }
 
+    @Override
     public InventoryView openInventory(Inventory inventory) {
         InventoryView view = new GlowInventoryView(this, inventory);
         openInventory(view);
         return view;
     }
 
+    @Override
     public InventoryView openWorkbench(Location location, boolean force) {
         if (location == null) {
             location = getLocation();
@@ -291,6 +329,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         return openInventory(new GlowCraftingInventory(this, InventoryType.WORKBENCH));
     }
 
+    @Override
     public InventoryView openEnchanting(Location location, boolean force) {
         if (location == null) {
             location = getLocation();
@@ -303,8 +342,10 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         return null;
     }
 
+    @Override
     public void openInventory(InventoryView inventory) {
         Validate.notNull(inventory);
+        this.inventory.getDragTracker().reset();
 
         // stop viewing the old inventory and start viewing the new one
         removeViewer(inventoryView.getTopInventory());
@@ -314,8 +355,10 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         addViewer(inventoryView.getBottomInventory());
     }
 
+    @Override
     public void closeInventory() {
-        getItemOnCursor();
+        // todo: drop item on cursor to ground
+        setItemOnCursor(null);
         openInventory(new GlowInventoryView(this));
     }
 

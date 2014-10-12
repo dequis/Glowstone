@@ -1,33 +1,20 @@
 package net.glowstone.net.message.play.player;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.bukkit.Location;
 
+@Getter
+@EqualsAndHashCode(callSuper = true)
 public final class PlayerPositionMessage extends PlayerUpdateMessage {
 
-    private final double x, y, headY, z;
+    private final double x, y, z;
 
-    public PlayerPositionMessage(boolean onGround, double x, double y, double headY, double z) {
+    public PlayerPositionMessage(boolean onGround, double x, double y, double z) {
         super(onGround);
         this.x = x;
         this.y = y;
-        this.headY = headY;
         this.z = z;
-    }
-
-    public double getX() {
-        return x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public double getHeadY() {
-        return headY;
-    }
-
-    public double getZ() {
-        return z;
     }
 
     @Override
@@ -39,12 +26,12 @@ public final class PlayerPositionMessage extends PlayerUpdateMessage {
 
     @Override
     public String toString() {
-        return "PlayerPositionMessage{" +
-                "onGround=" + getOnGround() +
+        return "PlayerPositionMessage(" +
+                "onGround=" + isOnGround() +
                 ", x=" + x +
                 ", y=" + y +
-                ", headY=" + headY +
                 ", z=" + z +
-                '}';
+                ')';
     }
+
 }

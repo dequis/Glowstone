@@ -2,7 +2,11 @@ package net.glowstone.net.message.play.entity;
 
 import com.flowpowered.networking.Message;
 import org.bukkit.EntityEffect;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
+@Data
+@RequiredArgsConstructor
 public final class EntityStatusMessage implements Message {
 
     // statuses not included in Bukkit's EntityEffect
@@ -14,26 +18,8 @@ public final class EntityStatusMessage implements Message {
 
     private final int id, status;
 
-    public EntityStatusMessage(int id, int status) {
-        this.id = id;
-        this.status = status;
-    }
-
     public EntityStatusMessage(int id, EntityEffect effect) {
         this(id, effect.getData());
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    @Override
-    public String toString() {
-        return "EntityStatusMessage{id=" + id + ",status=" + status + "}";
     }
 
 }

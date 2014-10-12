@@ -7,6 +7,7 @@ import org.bukkit.command.CommandException;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
+import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.permissions.PermissibleBase;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
@@ -143,9 +144,11 @@ public final class ConsoleManager {
     }
 
     private class CommandCompleter implements Completer {
+        @Override
         public int complete(final String buffer, int cursor, List<CharSequence> candidates) {
             try {
                 List<String> completions = server.getScheduler().syncIfNeeded(new Callable<List<String>>() {
+                    @Override
                     public List<String> call() throws Exception {
                         return server.getCommandMap().tabComplete(sender, buffer);
                     }
@@ -196,8 +199,10 @@ public final class ConsoleManager {
             this.command = command;
         }
 
+        @Override
         public void run() {
-            server.dispatchCommand(sender, EventFactory.onServerCommand(sender, command).getCommand());
+            ServerCommandEvent event = EventFactory.callEvent(new ServerCommandEvent(sender, command));
+            server.dispatchCommand(sender, event.getCommand());
         }
     }
 
@@ -207,28 +212,34 @@ public final class ConsoleManager {
         ////////////////////////////////////////////////////////////////////////
         // CommandSender
 
+        @Override
         public String getName() {
             return "CONSOLE";
         }
 
+        @Override
         public void sendMessage(String text) {
             server.getLogger().info(text);
         }
 
+        @Override
         public void sendMessage(String[] strings) {
             for (String line : strings) {
                 sendMessage(line);
             }
         }
 
+        @Override
         public GlowServer getServer() {
             return server;
         }
 
+        @Override
         public boolean isOp() {
             return true;
         }
 
+        @Override
         public void setOp(boolean value) {
             throw new UnsupportedOperationException("Cannot change operator status of server console");
         }
@@ -236,46 +247,57 @@ public final class ConsoleManager {
         ////////////////////////////////////////////////////////////////////////
         // Permissible
 
+        @Override
         public boolean isPermissionSet(String name) {
             return perm.isPermissionSet(name);
         }
 
+        @Override
         public boolean isPermissionSet(Permission perm) {
             return this.perm.isPermissionSet(perm);
         }
 
+        @Override
         public boolean hasPermission(String name) {
             return perm.hasPermission(name);
         }
 
+        @Override
         public boolean hasPermission(Permission perm) {
             return this.perm.hasPermission(perm);
         }
 
+        @Override
         public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value) {
             return perm.addAttachment(plugin, name, value);
         }
 
+        @Override
         public PermissionAttachment addAttachment(Plugin plugin) {
             return perm.addAttachment(plugin);
         }
 
+        @Override
         public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value, int ticks) {
             return perm.addAttachment(plugin, name, value, ticks);
         }
 
+        @Override
         public PermissionAttachment addAttachment(Plugin plugin, int ticks) {
             return perm.addAttachment(plugin, ticks);
         }
 
+        @Override
         public void removeAttachment(PermissionAttachment attachment) {
             perm.removeAttachment(attachment);
         }
 
+        @Override
         public void recalculatePermissions() {
             perm.recalculatePermissions();
         }
 
+        @Override
         public Set<PermissionAttachmentInfo> getEffectivePermissions() {
             return perm.getEffectivePermissions();
         }

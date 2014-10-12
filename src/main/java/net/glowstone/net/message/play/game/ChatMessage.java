@@ -1,15 +1,24 @@
 package net.glowstone.net.message.play.game;
 
-import net.glowstone.net.message.JsonMessage;
+import com.flowpowered.networking.Message;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import net.glowstone.util.TextMessage;
 import org.json.simple.JSONObject;
 
-public final class ChatMessage extends JsonMessage {
+@Data
+@RequiredArgsConstructor
+public final class ChatMessage implements Message {
+
+    private final TextMessage text;
+    private final int mode;
 
     public ChatMessage(JSONObject json) {
-        super(json);
+        this(new TextMessage(json), 0);
     }
 
     public ChatMessage(String text) {
-        super(toTextJson(text));
+        this(new TextMessage(text), 0);
     }
+
 }

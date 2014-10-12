@@ -34,6 +34,7 @@ abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore
     // - compound "Leash"
     // on ActiveEffects, bool "ShowParticles"
 
+    @Override
     public void load(T entity, CompoundTag compound) {
         super.load(entity, compound);
 
@@ -109,6 +110,7 @@ abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore
         }
     }
 
+    @Override
     public void save(T entity, CompoundTag tag) {
         super.save(entity, tag);
 
@@ -142,7 +144,7 @@ abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore
                 NbtSerialization.writeItem(equip.getChestplate(), -1),
                 NbtSerialization.writeItem(equip.getHelmet(), -1)
         ));
-        tag.putList("DropChances", TagType.FLOAT, Arrays.<Float>asList(
+        tag.putList("DropChances", TagType.FLOAT, Arrays.asList(
                 equip.getItemInHandDropChance(),
                 equip.getBootsDropChance(),
                 equip.getLeggingsDropChance(),

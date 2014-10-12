@@ -1,7 +1,10 @@
 package net.glowstone;
 
+import net.glowstone.constants.GlowBiome;
 import net.glowstone.io.ChunkIoService;
 import org.bukkit.block.Biome;
+import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.event.world.ChunkPopulateEvent;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 
@@ -118,7 +121,7 @@ public final class ChunkManager {
         // try to load chunk
         try {
             if (service.read(chunk)) {
-                EventFactory.onChunkLoad(chunk, false);
+                EventFactory.callEvent(new ChunkLoadEvent(chunk, false));
                 return true;
             }
         } catch (Exception e) {
@@ -136,12 +139,12 @@ public final class ChunkManager {
         // get generating
         try {
             generateChunk(chunk, x, z);
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             GlowServer.logger.log(Level.SEVERE, "Error while generating chunk (" + x + "," + z + ")", ex);
             return false;
         }
 
-        EventFactory.onChunkLoad(chunk, true);
+        EventFactory.callEvent(new ChunkLoadEvent(chunk, true));
 
         // right now, forcePopulate takes care of populating chunks that players actually see.
         /*for (int x2 = x - 1; x2 <= x + 1; ++x2) {
@@ -207,7 +210,7 @@ public final class ChunkManager {
             p.populate(world, random, chunk);
         }
 
-        EventFactory.onChunkPopulate(chunk);
+        EventFactory.callEvent(new ChunkPopulateEvent(chunk));
     }
 
     /**
@@ -217,7 +220,11 @@ public final class ChunkManager {
      * @param z The Z coordinate.
      */
     public void forcePopulation(int x, int z) {
-        populateChunk(x, z, true);
+        try {
+            populateChunk(x, z, true);
+        } catch (Throwable ex) {
+            GlowServer.logger.log(Level.SEVERE, "Error while populating chunk (" + x + "," + z + ")", ex);
+        }
     }
 
     /**
@@ -225,12 +232,25 @@ public final class ChunkManager {
      */
     private void generateChunk(GlowChunk chunk, int x, int z) {
         Random random = new Random((long) x * 341873128712L + (long) z * 132897987541L);
-        ChunkGenerator.BiomeGrid biomes = new BiomeGrid(x, z);
+        BiomeGrid biomes = new BiomeGrid();
 
-        // try for extended sections
+        // extended sections
         short[][] extSections = generator.generateExtBlockSections(world, random, x, z, biomes);
         if (extSections != null) {
-            throw new UnsupportedOperationException("Extended chunk sections not yet supported");
+            GlowChunk.ChunkSection[] sections = new GlowChunk.ChunkSection[extSections.length];
+            for (int i = 0; i < extSections.length; ++i) {
+                // this is sort of messy.
+                if (extSections[i] != null) {
+                    sections[i] = new GlowChunk.ChunkSection();
+                    for (int j = 0; j < extSections[i].length; ++j) {
+                        sections[i].types[j] = (char) (extSections[i][j] << 4);
+                    }
+                    sections[i].recount();
+                }
+            }
+            chunk.initializeSections(sections);
+            chunk.setBiomes(biomes.biomes);
+            return;
         }
 
         // normal sections
@@ -239,17 +259,21 @@ public final class ChunkManager {
             GlowChunk.ChunkSection[] sections = new GlowChunk.ChunkSection[blockSections.length];
             for (int i = 0; i < blockSections.length; ++i) {
                 // this is sort of messy.
-                sections[i] = new GlowChunk.ChunkSection();
-                System.arraycopy(blockSections[i], 0, sections[i].types, 0, sections[i].types.length);
+                if (blockSections[i] != null) {
+                    sections[i] = new GlowChunk.ChunkSection();
+                    for (int j = 0; j < blockSections[i].length; ++j) {
+                        sections[i].types[j] = (char) (blockSections[i][j] << 4);
+                    }
+                    sections[i].recount();
+                }
             }
             chunk.initializeSections(sections);
+            chunk.setBiomes(biomes.biomes);
             return;
         }
 
         // deprecated flat generation
         byte[] types = generator.generate(world, random, x, z);
-        //GlowServer.logger.warning("Using deprecated generate() in generator: " + generator.getClass().getName());
-
         GlowChunk.ChunkSection[] sections = new GlowChunk.ChunkSection[8];
         for (int sy = 0; sy < sections.length; ++sy) {
             GlowChunk.ChunkSection sec = new GlowChunk.ChunkSection();
@@ -257,13 +281,16 @@ public final class ChunkManager {
             for (int cx = 0; cx < 16; ++cx) {
                 for (int cz = 0; cz < 16; ++cz) {
                     for (int cy = by; cy < by + 16; ++cy) {
-                        sec.types[sec.index(cx, cy, cz)] = types[(cx * 16 + cz) * 128 + cy];
+                        char type = (char) types[(cx * 16 + cz) * 128 + cy];
+                        sec.types[sec.index(cx, cy, cz)] = (char) (type << 4);
                     }
                 }
             }
+            sec.recount();
             sections[sy] = sec;
         }
         chunk.initializeSections(sections);
+        chunk.setBiomes(biomes.biomes);
     }
 
     /**
@@ -280,8 +307,13 @@ public final class ChunkManager {
         }
 
         chunk.setPopulated(false);
-        generateChunk(chunk, x, z);
-        populateChunk(x, z, false);  // should this be forced?
+        try {
+            generateChunk(chunk, x, z);
+            populateChunk(x, z, false);  // should this be forced?
+        } catch (Throwable ex) {
+            GlowServer.logger.log(Level.SEVERE, "Error while regenerating chunk (" + x + "," + z + ")", ex);
+            return false;
+        }
         return true;
     }
 
@@ -320,18 +352,16 @@ public final class ChunkManager {
      * A BiomeGrid implementation for chunk generation.
      */
     private class BiomeGrid implements ChunkGenerator.BiomeGrid {
-        private final int cx, cz;
-        public BiomeGrid(int x, int z) {
-            cx = x;
-            cz = z;
-        }
+        private final byte[] biomes = new byte[256];
 
+        @Override
         public Biome getBiome(int x, int z) {
-            return world.getBiome((cx << 4) | x, (cz << 4) | z);
+            return GlowBiome.getBiome(biomes[z * 16 + x]);
         }
 
+        @Override
         public void setBiome(int x, int z, Biome bio) {
-            world.setBiome((cx << 4) | x, (cz << 4) | z, bio);
+            biomes[z * 16 + x] = (byte) GlowBiome.getId(bio);
         }
     }
 
@@ -392,6 +422,7 @@ public final class ChunkManager {
             return "ChunkLock{" + desc + "}";
         }
 
+        @Override
         public Iterator<GlowChunk.Key> iterator() {
             return keys.iterator();
         }

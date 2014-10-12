@@ -40,34 +40,42 @@ public class GlowBlockState implements BlockState {
     ////////////////////////////////////////////////////////////////////////////
     // Basics
 
+    @Override
     public GlowWorld getWorld() {
         return world;
     }
 
+    @Override
     public GlowChunk getChunk() {
         return chunk;
     }
 
+    @Override
     public GlowBlock getBlock() {
         return world.getBlockAt(x, y, z);
     }
 
+    @Override
     public int getX() {
         return x;
     }
 
+    @Override
     public int getY() {
         return y;
     }
 
+    @Override
     public int getZ() {
         return z;
     }
 
+    @Override
     public Location getLocation() {
         return getBlock().getLocation();
     }
 
+    @Override
     public Location getLocation(Location loc) {
         return getBlock().getLocation(loc);
     }
@@ -75,55 +83,67 @@ public class GlowBlockState implements BlockState {
     ////////////////////////////////////////////////////////////////////////////
     // Type and data
 
-    final public Material getType() {
+    @Override
+    public final Material getType() {
         return Material.getMaterial(type);
     }
 
-    final public void setType(Material type) {
+    @Override
+    public final void setType(Material type) {
         setTypeId(type.getId());
     }
 
-    final public int getTypeId() {
+    @Override
+    public final int getTypeId() {
         return type;
     }
 
-    final public boolean setTypeId(int type) {
+    @Override
+    public final boolean setTypeId(int type) {
         this.type = type;
         makeData((byte) 0);
         return true;
     }
 
-    final public MaterialData getData() {
+    @Override
+    public final MaterialData getData() {
         return data;
     }
 
-    final public void setData(MaterialData data) {
+    @Override
+    public final void setData(MaterialData data) {
         this.data = data;
     }
 
-    final public byte getRawData() {
+    @Override
+    public final byte getRawData() {
         return getData().getData();
     }
 
-    final public void setRawData(byte data) {
+    @Override
+    public final void setRawData(byte data) {
         getData().setData(data);
     }
 
-    final public byte getLightLevel() {
+    @Override
+    public final byte getLightLevel() {
         return light;
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Update
 
+    @Override
     public final boolean update() {
         return update(false, true);
     }
 
+    @Override
     public final boolean update(boolean force) {
         return update(force, true);
     }
 
+    @Override
     public boolean update(boolean force, boolean applyPhysics) {
         Block block = getBlock();
 
@@ -145,18 +165,22 @@ public class GlowBlockState implements BlockState {
     ////////////////////////////////////////////////////////////////////////////
     // Metadata
 
+    @Override
     public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
         getBlock().setMetadata(metadataKey, newMetadataValue);
     }
 
+    @Override
     public List<MetadataValue> getMetadata(String metadataKey) {
         return getBlock().getMetadata(metadataKey);
     }
 
+    @Override
     public boolean hasMetadata(String metadataKey) {
         return getBlock().hasMetadata(metadataKey);
     }
 
+    @Override
     public void removeMetadata(String metadataKey, Plugin owningPlugin) {
         getBlock().removeMetadata(metadataKey, owningPlugin);
     }

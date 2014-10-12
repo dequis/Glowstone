@@ -13,6 +13,7 @@ import net.glowstone.util.Position;
 import org.apache.commons.lang.Validate;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -35,7 +36,8 @@ public abstract class GlowEntity implements Entity {
     /**
      * The metadata store class for entities.
      */
-    private final static class EntityMetadataStore extends MetadataStoreBase<Entity> implements MetadataStore<Entity> {
+    private static final class EntityMetadataStore extends MetadataStoreBase<Entity> implements MetadataStore<Entity> {
+        @Override
         protected String disambiguate(Entity subject, String metadataKey) {
             return subject.getUniqueId() + ":" + metadataKey;
         }
@@ -44,7 +46,7 @@ public abstract class GlowEntity implements Entity {
     /**
      * The metadata store for entities.
      */
-    private final static MetadataStore<Entity> bukkitMetadata = new EntityMetadataStore();
+    private static final MetadataStore<Entity> bukkitMetadata = new EntityMetadataStore();
 
     /**
      * Velocity reduction applied each tick.
@@ -166,18 +168,22 @@ public abstract class GlowEntity implements Entity {
     ////////////////////////////////////////////////////////////////////////////
     // Core properties
 
+    @Override
     public final GlowServer getServer() {
         return server;
     }
 
+    @Override
     public final GlowWorld getWorld() {
         return world;
     }
 
+    @Override
     public final int getEntityId() {
         return id;
     }
 
+    @Override
     public UUID getUniqueId() {
         if (uuid == null) {
             uuid = UUID.randomUUID();
@@ -185,10 +191,12 @@ public abstract class GlowEntity implements Entity {
         return uuid;
     }
 
+    @Override
     public boolean isDead() {
         return !active;
     }
 
+    @Override
     public boolean isValid() {
         return world.getEntityManager().getEntity(id) == this;
     }
@@ -196,23 +204,52 @@ public abstract class GlowEntity implements Entity {
     ////////////////////////////////////////////////////////////////////////////
     // Location stuff
 
+    @Override
     public Location getLocation() {
         return location.clone();
     }
 
+    @Override
     public Location getLocation(Location loc) {
         return Position.copyLocation(location, loc);
     }
 
+    /**
+     * Get the direction (SOUTH, WEST, NORTH, or EAST) this entity is facing.
+     * @return The cardinal BlockFace of this entity.
+     */
+    public BlockFace getDirection() {
+        double rot = getLocation().getYaw() % 360;
+        if (rot < 0) {
+            rot += 360.0;
+        }
+        if (0 <= rot && rot < 45) {
+            return BlockFace.SOUTH;
+        } else if (45 <= rot && rot < 135) {
+            return BlockFace.WEST;
+        } else if (135 <= rot && rot < 225) {
+            return BlockFace.NORTH;
+        } else if (225 <= rot && rot < 315) {
+            return BlockFace.EAST;
+        } else if (315 <= rot && rot < 360.0) {
+            return BlockFace.SOUTH;
+        } else {
+            return BlockFace.EAST;
+        }
+    }
+
+    @Override
     public void setVelocity(Vector velocity) {
         this.velocity.copy(velocity);
         velocityChanged = true;
     }
 
+    @Override
     public Vector getVelocity() {
         return velocity.clone();
     }
 
+    @Override
     public boolean teleport(Location location) {
         if (location.getWorld() != world) {
             world.getEntityManager().deallocate(this);
@@ -224,14 +261,17 @@ public abstract class GlowEntity implements Entity {
         return true;
     }
 
+    @Override
     public boolean teleport(Entity destination) {
         return teleport(destination.getLocation());
     }
 
+    @Override
     public boolean teleport(Location location, TeleportCause cause) {
         return teleport(location);
     }
 
+    @Override
     public boolean teleport(Entity destination, TeleportCause cause) {
         return teleport(destination.getLocation(), cause);
     }
@@ -433,42 +473,52 @@ public abstract class GlowEntity implements Entity {
     ////////////////////////////////////////////////////////////////////////////
     // Various properties
 
+    @Override
     public int getFireTicks() {
         return fireTicks;
     }
 
+    @Override
     public void setFireTicks(int ticks) {
         fireTicks = ticks;
     }
 
+    @Override
     public int getMaxFireTicks() {
         return 160;  // this appears to be Minecraft's default value
     }
 
+    @Override
     public float getFallDistance() {
         return fallDistance;
     }
 
+    @Override
     public void setFallDistance(float distance) {
         fallDistance = Math.max(distance, 0);
     }
 
+    @Override
     public void setLastDamageCause(EntityDamageEvent event) {
         lastDamageCause = event;
     }
 
+    @Override
     public EntityDamageEvent getLastDamageCause() {
         return lastDamageCause;
     }
 
+    @Override
     public int getTicksLived() {
         return ticksLived;
     }
 
+    @Override
     public void setTicksLived(int value) {
         this.ticksLived = value;
     }
 
+    @Override
     public boolean isOnGround() {
         return onGround;
     }
@@ -480,11 +530,13 @@ public abstract class GlowEntity implements Entity {
     ////////////////////////////////////////////////////////////////////////////
     // Miscellaneous actions
 
+    @Override
     public void remove() {
         active = false;
         world.getEntityManager().deallocate(this);
     }
 
+    @Override
     public List<Entity> getNearbyEntities(double x, double y, double z) {
         // This behavior is similar to CraftBukkit, where a call with args
         // (0, 0, 0) finds any entities whose bounding boxes intersect that of
@@ -503,9 +555,10 @@ public abstract class GlowEntity implements Entity {
         return world.getEntityManager().getEntitiesInside(searchBox, this);
     }
 
+    @Override
     public void playEffect(EntityEffect type) {
         for (GlowPlayer player : world.getRawPlayers()) {
-            if (player.canSee(this)) {
+            if (player.canSeeEntity(this)) {
                 player.getSession().send(new EntityStatusMessage(id, type));
             }
         }
@@ -514,30 +567,37 @@ public abstract class GlowEntity implements Entity {
     ////////////////////////////////////////////////////////////////////////////
     // Entity stacking
 
+    @Override
     public boolean isInsideVehicle() {
         return getVehicle() != null;
     }
 
+    @Override
     public boolean leaveVehicle() {
         return false;
     }
 
+    @Override
     public Entity getVehicle() {
         return null;
     }
 
+    @Override
     public Entity getPassenger() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public boolean setPassenger(Entity passenger) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public boolean isEmpty() {
         return getPassenger() == null;
     }
 
+    @Override
     public boolean eject() {
         return !isEmpty() && setPassenger(null);
     }
@@ -545,18 +605,22 @@ public abstract class GlowEntity implements Entity {
     ////////////////////////////////////////////////////////////////////////////
     // Metadata
 
+    @Override
     public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
         bukkitMetadata.setMetadata(this, metadataKey, newMetadataValue);
     }
 
+    @Override
     public List<MetadataValue> getMetadata(String metadataKey) {
         return bukkitMetadata.getMetadata(this, metadataKey);
     }
 
+    @Override
     public boolean hasMetadata(String metadataKey) {
         return bukkitMetadata.hasMetadata(this, metadataKey);
     }
 
+    @Override
     public void removeMetadata(String metadataKey, Plugin owningPlugin) {
         bukkitMetadata.removeMetadata(this, metadataKey, owningPlugin);
     }

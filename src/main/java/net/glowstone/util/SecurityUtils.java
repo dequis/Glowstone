@@ -9,7 +9,7 @@ import java.util.logging.Level;
 /**
  * Utility class for performing encrypted authentication
  */
-public class SecurityUtils {
+public final class SecurityUtils {
 
     private static SecureRandom random = new SecureRandom();
 
@@ -27,7 +27,7 @@ public class SecurityUtils {
 
             keyPair = generator.generateKeyPair();
         } catch (NoSuchAlgorithmException ex) {
-            GlowServer.logger.log(Level.SEVERE, "Unable to generate RSA key pair: {0}", ex.getMessage());
+            GlowServer.logger.log(Level.SEVERE, "Unable to generate RSA key pair", ex);
         }
         return keyPair;
     }
@@ -52,7 +52,7 @@ public class SecurityUtils {
 
             key = keyFactory.generatePublic(encodedKeySpec);
         } catch (Exception ex) {
-            GlowServer.logger.log(Level.SEVERE, "Unable to generate X509 encoded key: {0}", ex.getMessage());
+            GlowServer.logger.log(Level.SEVERE, "Unable to generate X509 encoded key", ex);
         }
         return key;
     }

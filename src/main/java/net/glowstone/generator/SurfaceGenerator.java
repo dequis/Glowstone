@@ -17,7 +17,8 @@ import java.util.Random;
 public class SurfaceGenerator extends GlowChunkGenerator {
 
     public SurfaceGenerator() {
-        super(  // In-ground
+        super(
+                // In-ground
                 new LakePopulator(),
                 // On-ground
                 // Desert is before tree and mushroom but snow is after so trees have snow on top
@@ -29,7 +30,8 @@ public class SurfaceGenerator extends GlowChunkGenerator {
                 // Below-ground
                 new DungeonPopulator(),
                 //new CavePopulator(),
-                new OrePopulator());
+                new OrePopulator()
+        );
     }
 
     @Override
@@ -52,10 +54,10 @@ public class SurfaceGenerator extends GlowChunkGenerator {
 
         byte[] buf = start(Material.AIR);
 
-        int baseHeight = world.getMaxHeight() / 2;
+        int baseHeight = WORLD_DEPTH / 2;
         double terrainHeight = 50;
         boolean noDirt = true;
-        int waterLevel = world.getMaxHeight() / 2;
+        int waterLevel = WORLD_DEPTH / 2;
 
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
@@ -64,7 +66,7 @@ public class SurfaceGenerator extends GlowChunkGenerator {
                         + noiseHeight.noise(x + chunkX, z + chunkZ, 0.7, 0.6, true)
                         * terrainHeight
                         + noiseJitter.noise(x + chunkX, z + chunkZ, 0.5, 0.5)
-                        * 1.5, world.getMaxHeight() - 1); y > 0; y--) {
+                        * 1.5, WORLD_DEPTH - 1); y > 0; y--) {
                     double terrainType = noiseType.noise(x + chunkX, y, z + chunkZ, 0.5, 0.5);
                     Material ground = matTop;
                     if (Math.abs(terrainType) < random.nextDouble() / 3 && !noDirt) {
@@ -125,7 +127,7 @@ public class SurfaceGenerator extends GlowChunkGenerator {
         octaves.put("jitter", gen);
 
         gen = new SimplexOctaveGenerator(seed, 2);
-        gen.setScale(1 / world.getMaxHeight());
+        gen.setScale(1 / WORLD_DEPTH);
         octaves.put("type", gen);
     }
 
@@ -133,5 +135,5 @@ public class SurfaceGenerator extends GlowChunkGenerator {
     public Location getFixedSpawnLocation(World world, Random random) {
         return new Location(world, 0, 2 + world.getHighestBlockYAt(0, 0), 0);
     }
-    
+
 }

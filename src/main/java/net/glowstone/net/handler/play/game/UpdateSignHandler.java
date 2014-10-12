@@ -10,8 +10,15 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 
 public final class UpdateSignHandler implements MessageHandler<GlowSession, UpdateSignMessage> {
+    @Override
     public void handle(GlowSession session, UpdateSignMessage message) {
         final GlowPlayer player = session.getPlayer();
+
+        // filter out json messages that aren't plaintext
+        String[] lines = new String[4];
+        for (int i = 0; i < lines.length; ++i) {
+            lines[i] = message.getMessage()[i].asPlaintext();
+        }
 
         Location location = new Location(player.getWorld(), message.getX(), message.getY(), message.getZ());
         if (player.checkSignLocation(location)) {
@@ -19,8 +26,8 @@ public final class UpdateSignHandler implements MessageHandler<GlowSession, Upda
             BlockState state = location.getBlock().getState();
             if (state instanceof Sign) {
                 Sign sign = (Sign) state;
-                for (int i = 0; i < message.getMessage().length; ++i) {
-                    sign.setLine(i, message.getMessage()[i]);
+                for (int i = 0; i < lines.length; ++i) {
+                    sign.setLine(i, lines[i]);
                 }
                 sign.update();
             }

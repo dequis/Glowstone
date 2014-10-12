@@ -1,44 +1,23 @@
 package net.glowstone.net.message.play.player;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.bukkit.Location;
 
+@Getter
+@EqualsAndHashCode(callSuper = true)
 public final class PlayerPositionLookMessage extends PlayerUpdateMessage {
 
-    private final double x, y, headY,  z;
+    private final double x, y, z;
     private final float yaw, pitch;
 
-    public PlayerPositionLookMessage(boolean onGround, double x, double y,double headY,  double z, float yaw, float pitch) {
+    public PlayerPositionLookMessage(boolean onGround, double x, double y, double z, float yaw, float pitch) {
         super(onGround);
         this.x = x;
         this.y = y;
-        this.headY = headY;
         this.z = z;
-        this.yaw = yaw;
+        this.yaw = (yaw % 360 + 360) % 360;
         this.pitch = pitch;
-    }
-
-    public double getX() {
-        return x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public double getHeadY() {
-        return headY;
-    }
-
-    public double getZ() {
-        return z;
-    }
-
-    public float getYaw() {
-        return yaw;
-    }
-
-    public float getPitch() {
-        return pitch;
     }
 
     @Override
@@ -52,14 +31,14 @@ public final class PlayerPositionLookMessage extends PlayerUpdateMessage {
 
     @Override
     public String toString() {
-        return "PlayerPositionLookMessage{" +
-                "onGround=" + getOnGround() +
+        return "PlayerPositionLookMessage(" +
+                "onGround=" + isOnGround() +
                 ", x=" + x +
                 ", y=" + y +
-                ", headY=" + headY +
                 ", z=" + z +
                 ", yaw=" + yaw +
                 ", pitch=" + pitch +
-                '}';
+                ')';
     }
+
 }

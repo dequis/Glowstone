@@ -2,51 +2,53 @@ package net.glowstone.net.handler.handshake;
 
 import com.flowpowered.networking.MessageHandler;
 import net.glowstone.GlowServer;
+import net.glowstone.net.ProxyData;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.handshake.HandshakeMessage;
-import net.glowstone.net.protocol.GlowProtocol;
-import net.glowstone.net.protocol.LoginProtocol;
-import net.glowstone.net.protocol.StatusProtocol;
+import net.glowstone.net.protocol.ProtocolType;
+
+import java.util.logging.Level;
 
 public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMessage> {
 
     @Override
     public void handle(GlowSession session, HandshakeMessage message) {
-        int state = message.getState();
-        Protocols[] values = Protocols.values();
-        if (state < 0 || state >= values.length) {
-            session.disconnect("State out of range");
-            return;
-        }
-
-        Protocols newProtocol = values[state];
-
-        GlowProtocol protocol;
-        if (newProtocol == Protocols.LOGIN) {
-            protocol = new LoginProtocol(session.getServer());
-        } else if (newProtocol == Protocols.STATUS) {
-            protocol = new StatusProtocol(session.getServer());
-        } else {
+        ProtocolType protocol = ProtocolType.getById(message.getState());
+        if (protocol != ProtocolType.LOGIN && protocol != ProtocolType.STATUS) {
             session.disconnect("Invalid state");
             return;
         }
 
-        //GlowServer.logger.info("Handshake [" + message.getAddress() + ":" + message.getPort() + "], next state " + newProtocol);
+        session.setHostname(message.getAddress() + ":" + message.getPort());
+
+        // Proxies modify the hostname in the HandshakeMessage to contain
+        // the client's UUID and (optionally) properties
+        if (session.getServer().getProxySupport()) {
+            try {
+                session.setProxyData(new ProxyData(session, message.getAddress()));
+            } catch (IllegalArgumentException ex) {
+                session.disconnect("Invalid proxy data provided.");
+                // protocol is still set here and below to prevent errors
+                // trying to decode packets after this one under the wrong
+                // protocol, even though client is kicked
+                session.setProtocol(protocol);
+                return;
+            } catch (Exception ex) {
+                GlowServer.logger.log(Level.SEVERE, "Error parsing proxy data for " + session, ex);
+                session.disconnect("Failed to parse proxy data.");
+                session.setProtocol(protocol);
+                return;
+            }
+        }
+
         session.setProtocol(protocol);
 
-        if (newProtocol == Protocols.LOGIN) {
+        if (protocol == ProtocolType.LOGIN) {
             if (message.getVersion() < GlowServer.PROTOCOL_VERSION) {
                 session.disconnect("Outdated client!");
             } else if (message.getVersion() > GlowServer.PROTOCOL_VERSION) {
                 session.disconnect("Outdated server!");
             }
         }
-    }
-
-    private static enum Protocols {
-        HANDSHAKE,
-        STATUS,
-        LOGIN,
-        PLAY
     }
 }

@@ -1,27 +1,27 @@
 package net.glowstone.net.protocol;
 
-import net.glowstone.GlowServer;
-import net.glowstone.net.codec.JsonCodec;
+import net.glowstone.net.codec.KickCodec;
+import net.glowstone.net.codec.SetCompressionCodec;
 import net.glowstone.net.codec.play.entity.*;
 import net.glowstone.net.codec.play.game.*;
 import net.glowstone.net.codec.play.inv.*;
 import net.glowstone.net.codec.play.player.*;
-import net.glowstone.net.handler.play.entity.AnimateEntityHandler;
 import net.glowstone.net.handler.play.game.*;
 import net.glowstone.net.handler.play.inv.*;
 import net.glowstone.net.handler.play.player.*;
 import net.glowstone.net.message.KickMessage;
+import net.glowstone.net.message.SetCompressionMessage;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.game.*;
 import net.glowstone.net.message.play.inv.*;
 import net.glowstone.net.message.play.player.*;
 
 public final class PlayProtocol extends GlowProtocol {
-    public PlayProtocol(GlowServer server) {
-        super(server, "PLAY", 0x43);
+    public PlayProtocol() {
+        super("PLAY", 0x49);
 
         inbound(0x00, PingMessage.class, PingCodec.class, PingHandler.class);
-        inbound(0x01, IncomingChatMessage.class, IncomingChatCodec.class, ChatHandler.class);
+        inbound(0x01, IncomingChatMessage.class, IncomingChatCodec.class, IncomingChatHandler.class);
         inbound(0x02, InteractEntityMessage.class, InteractEntityCodec.class, InteractEntityHandler.class);
         inbound(0x03, PlayerUpdateMessage.class, PlayerUpdateCodec.class, PlayerUpdateHandler.class);
         inbound(0x04, PlayerPositionMessage.class, PlayerPositionCodec.class, PlayerUpdateHandler.class);
@@ -30,7 +30,7 @@ public final class PlayProtocol extends GlowProtocol {
         inbound(0x07, DiggingMessage.class, DiggingCodec.class, DiggingHandler.class);
         inbound(0x08, BlockPlacementMessage.class, BlockPlacementCodec.class, BlockPlacementHandler.class);
         inbound(0x09, HeldItemMessage.class, HeldItemCodec.class, HeldItemHandler.class);
-        inbound(0x0A, AnimateEntityMessage.class, AnimateEntityCodec.class, AnimateEntityHandler.class);
+        inbound(0x0A, PlayerSwingArmMessage.class, PlayerSwingArmCodec.class, PlayerSwingArmHandler.class);
         inbound(0x0B, PlayerActionMessage.class, PlayerActionCodec.class, PlayerActionHandler.class);
         inbound(0x0C, SteerVehicleMessage.class, SteerVehicleCodec.class, SteerVehicleHandler.class);
         inbound(0x0D, CloseWindowMessage.class, CloseWindowCodec.class, CloseWindowHandler.class);
@@ -44,10 +44,12 @@ public final class PlayProtocol extends GlowProtocol {
         inbound(0x15, ClientSettingsMessage.class, ClientSettingsCodec.class, ClientSettingsHandler.class);
         inbound(0x16, ClientStatusMessage.class, ClientStatusCodec.class, ClientStatusHandler.class);
         inbound(0x17, PluginMessage.class, PluginMessageCodec.class, PluginMessageHandler.class);
+        inbound(0x18, SpectateMessage.class, SpectateCodec.class, SpectateHandler.class);
+        inbound(0x19, ResourcePackStatusMessage.class, ResourcePackStatusCodec.class, ResourcePackStatusHandler.class);
 
         outbound(0x00, PingMessage.class, PingCodec.class);
         outbound(0x01, JoinGameMessage.class, JoinGameCodec.class);
-        outbound(0x02, ChatMessage.class, JsonCodec.class);
+        outbound(0x02, ChatMessage.class, ChatCodec.class);
         outbound(0x03, TimeMessage.class, TimeCodec.class);
         outbound(0x04, EntityEquipmentMessage.class, EntityEquipmentCodec.class);
         outbound(0x05, SpawnPositionMessage.class, SpawnPositionCodec.class);
@@ -99,6 +101,15 @@ public final class PlayProtocol extends GlowProtocol {
         outbound(0x39, PlayerAbilitiesMessage.class, PlayerAbilitiesCodec.class);
         outbound(0x3A, TabCompleteResponseMessage.class, TabCompleteResponseCodec.class);
         outbound(0x3F, PluginMessage.class, PluginMessageCodec.class);
-        outbound(0x40, KickMessage.class, JsonCodec.class);
+        outbound(0x40, KickMessage.class, KickCodec.class);
+        outbound(0x41, ServerDifficultyMessage.class, ServerDifficultyCodec.class);
+        outbound(0x42, CombatEventMessage.class, CombatEventCodec.class);
+        outbound(0x43, CameraMessage.class, CameraCodec.class);
+        outbound(0x44, WorldBorderMessage.class, WorldBorderCodec.class);
+        outbound(0x45, TitleMessage.class, TitleCodec.class);
+        outbound(0x46, SetCompressionMessage.class, SetCompressionCodec.class);
+        outbound(0x47, UserListHeaderFooterMessage.class, UserListHeaderFooterCodec.class);
+        outbound(0x48, ResourcePackSendMessage.class, ResourcePackSendCodec.class);
+        outbound(0x49, UpdateEntityNBTMessage.class, UpdateEntityNBTCodec.class);
     }
 }

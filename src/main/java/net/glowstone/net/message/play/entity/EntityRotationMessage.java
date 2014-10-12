@@ -1,32 +1,18 @@
 package net.glowstone.net.message.play.entity;
 
 import com.flowpowered.networking.Message;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
+@Data
+@RequiredArgsConstructor
 public final class EntityRotationMessage implements Message {
 
     private final int id, rotation, pitch;
+    private final boolean onGround;
 
     public EntityRotationMessage(int id, int rotation, int pitch) {
-        this.id = id;
-        this.rotation = rotation;
-        this.pitch = pitch;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public int getRotation() {
-        return rotation;
-    }
-
-    public int getPitch() {
-        return pitch;
-    }
-
-    @Override
-    public String toString() {
-        return "EntityRotationMessage{id=" + id + ",rotation=" + rotation + ",pitch=" + pitch + "}";
+        this(id, rotation, pitch, true);
     }
 
 }

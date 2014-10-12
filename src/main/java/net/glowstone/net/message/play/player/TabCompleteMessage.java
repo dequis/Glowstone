@@ -1,24 +1,14 @@
 package net.glowstone.net.message.play.player;
 
 import com.flowpowered.networking.Message;
+import lombok.Data;
+import org.bukkit.util.BlockVector;
 
+@Data
 public final class TabCompleteMessage implements Message {
 
     private final String text;
+    private final BlockVector location;
 
-    public TabCompleteMessage(String text) {
-        this.text = text;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    @Override
-    public String toString() {
-        return "TabCompleteMessage{" +
-                "text='" + text + '\'' +
-                '}';
-    }
 }
 
