@@ -32,13 +32,4 @@ public class GlowEnchantingInventory extends GlowInventory implements Enchanting
         return getItem(ITEM_SLOT);
     }
 
-    @Override
-    public void setResource(ItemStack item) {
-        setItem(LAPIS_SLOT, item);
-    }
-
-    @Override
-    public ItemStack getResource() {
-        return getItem(LAPIS_SLOT);
-    }
 }
