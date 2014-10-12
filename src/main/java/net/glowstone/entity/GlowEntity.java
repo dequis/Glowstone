@@ -51,17 +51,17 @@ public abstract class GlowEntity implements Entity {
     /**
      * Velocity reduction applied each tick.
      */
-    private final static double AIR_DRAG = 0.99;
+    public static final double AIR_DRAG = 0.99;
 
     /**
      * Velocity reduction applied each tick.
      */
-    private final static double LIQUID_DRAG = 0.8;
+    public static final double LIQUID_DRAG = 0.8;
 
     /**
      * Gravity acceleration applied each tick.
      */
-    private final static Vector GRAVITY = new Vector(0, 0.05, 0);
+    public static final Vector GRAVITY = new Vector(0, 0.05, 0);
 
     /**
      * The server this entity belongs to.
