@@ -15,7 +15,7 @@ import org.bukkit.util.Vector;
 
 public abstract class ItemFilledBucket extends ItemPlaceAs {
 
-    public ItemFilledBucket (Material placeAs) {
+    public ItemFilledBucket(Material placeAs) {
         super(placeAs);
     }
 

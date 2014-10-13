@@ -13,7 +13,7 @@ public abstract class BlockLiquid extends BlockType {
     ////////////////////////////////////////////////////////////////////////////
     // Setters for subclass use
 
-    public void setBucketType (Material bucketType) {
+    public void setBucketType(Material bucketType) {
         this.bucketType = bucketType;
     }
 
@@ -24,7 +24,7 @@ public abstract class BlockLiquid extends BlockType {
      * Get the bucket type to replace the empty bucket when the liquid has been collected
      * @return The associated bucket types material
      */
-    public Material getBucketType () {
+    public Material getBucketType() {
         return this.bucketType;
     }
 
@@ -43,7 +43,7 @@ public abstract class BlockLiquid extends BlockType {
         state.setType(getMaterial());
 
         // 8 = Full liquid block
-        state.setRawData((byte)8);
+        state.setRawData((byte) 8);
     }
 
 }

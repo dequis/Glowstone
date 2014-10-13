@@ -4,7 +4,7 @@ import org.bukkit.Material;
 
 public class ItemLavaBucket extends ItemFilledBucket {
 
-    public ItemLavaBucket () {
+    public ItemLavaBucket() {
         super(Material.LAVA);
         this.setMaxStackSize(1);
     }

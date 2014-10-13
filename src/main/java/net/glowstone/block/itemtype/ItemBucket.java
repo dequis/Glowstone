@@ -18,7 +18,7 @@ import java.util.Iterator;
 
 public class ItemBucket extends ItemType {
 
-    public ItemBucket () {
+    public ItemBucket() {
         super();
         this.setMaxStackSize(16);
     }
@@ -38,20 +38,19 @@ public class ItemBucket extends ItemType {
             target = itr.next();
             targetBlockType = ItemTable.instance().getBlock(target.getType());
             if (targetBlockType != null && targetBlockType instanceof BlockLiquid) {
-                if (((BlockLiquid)targetBlockType).isCollectible((GlowBlockState) target.getState())) {
+                if (((BlockLiquid) targetBlockType).isCollectible((GlowBlockState) target.getState())) {
                     validTarget = true;
                     break;
                 }
             }
         }
 
-        if (target != null && validTarget == true) {
+        if (target != null && validTarget) {
             // Get the direction of the bucket fill
             BlockFace face;
             if (previousTarget != null) {
                 face = target.getFace(previousTarget);
-            }
-            else {
+            } else {
                 face = BlockFace.SELF;
             }
 
@@ -65,8 +64,7 @@ public class ItemBucket extends ItemType {
             if (player.getGameMode() != GameMode.CREATIVE) {
                 if (holding.getAmount() == 1) {
                     holding.setType(replaceWith);
-                }
-                else {
+                } else {
                     holding.setAmount(holding.getAmount() - 1);
                     player.getInventory().addItem(new ItemStack(replaceWith));
                 }
