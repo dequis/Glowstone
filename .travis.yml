@@ -4,7 +4,7 @@ jdk: oraclejdk7
 
 install:
   # Try to fetch required glowkit PRs, if any.
-  - "[[ $TRAVIS_PULL_REQUEST != false ]] && ./etc/fetch_glowkit_pr.sh"
+  - "./etc/fetch_glowkit_pr.sh $TRAVIS_PULL_REQUEST"
 
 # Compile and package JAR and set build properties
 script:

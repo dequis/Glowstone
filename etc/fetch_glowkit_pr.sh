@@ -1,9 +1,12 @@
 #!/bin/bash
 
+[ "$1" == "false" ] && echo "Skipping glowkit build - not a PR" && exit 0
+
 # exit at the first failure
 set -e
 
-PR_ID=${1:-$TRAVIS_PULL_REQUEST}
+PR_ID=$1
+
 
 # public repo access token, to bypass rate limiting. will probably revoke later
 ACCESS_TOKEN=053b27d9bf05b86706b531e8cd63afcf1af3bada:x-oauth-basic
