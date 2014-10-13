@@ -10,7 +10,10 @@ install:
   - "sudo apt-get install jq"
 
   # Try to fetch required glowkit PRs, if any.
-  - "./etc/fetch_glowkit_pr.sh $TRAVIS_PULL_REQUEST || echo 'Glowkit build failed - trying to continue anyway'"
+  # But not today. Today is testing day. Testing day erryday.
+  - "./etc/fetch_glowkit_pr.sh 374 || echo 'Glowkit build failed - trying to continue anyway'"
+  - "./etc/fetch_glowkit_pr.sh 402 || echo 'Glowkit build failed - trying to continue anyway'"
+  - "./etc/fetch_glowkit_pr.sh 413 || echo 'Glowkit build failed - trying to continue anyway'"
 
   # Fetch gradle stuff, so it doesn't appear in the script step
   - "./gradlew clean"
