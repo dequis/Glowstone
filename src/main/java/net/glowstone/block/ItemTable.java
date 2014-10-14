@@ -123,6 +123,8 @@ public final class ItemTable {
         reg(Material.STATIONARY_WATER, new BlockWater());
         reg(Material.LAVA, new BlockLava());
         reg(Material.STATIONARY_LAVA, new BlockLava());
+        reg(Material.DOUBLE_PLANT, new BlockDoublePlant());
+
         reg(Material.SIGN, new ItemSign());
         reg(Material.REDSTONE, new ItemPlaceAs(Material.REDSTONE_WIRE));
         reg(Material.SUGAR_CANE, new ItemPlaceAs(Material.SUGAR_CANE_BLOCK));
@@ -133,7 +135,6 @@ public final class ItemTable {
         reg(Material.SKULL_ITEM, new ItemPlaceAs(Material.SKULL));
         reg(Material.REDSTONE_COMPARATOR, new ItemPlaceAs(Material.REDSTONE_COMPARATOR_OFF));
         reg(Material.BED, new ItemPlaceAs(Material.BED_BLOCK));
-
         reg(Material.BUCKET, new ItemBucket());
         reg(Material.WATER_BUCKET, new ItemFilledBucket(Material.WATER));
         reg(Material.LAVA_BUCKET, new ItemFilledBucket(Material.LAVA));
