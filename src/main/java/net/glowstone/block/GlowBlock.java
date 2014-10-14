@@ -26,6 +26,10 @@ import java.util.List;
  * Represents a single block in a world.
  */
 public final class GlowBlock implements Block {
+    private static final BlockFace[] LAYER = new BlockFace[]{
+            BlockFace.NORTH_WEST, BlockFace.NORTH, BlockFace.NORTH_EAST,
+            BlockFace.EAST, BlockFace.SELF, BlockFace.WEST,
+            BlockFace.SOUTH_WEST, BlockFace.SOUTH, BlockFace.SOUTH_EAST};
 
     /**
      * The metadata store class for blocks.
@@ -393,11 +397,11 @@ public final class GlowBlock implements Block {
 
                 BlockFace blockFace;
                 if (y == 0) {
-                    blockFace = face;
+                    blockFace = face.getOppositeFace();
                 } else if (y == -1 && face == BlockFace.SELF) {
-                    blockFace = BlockFace.DOWN;
-                } else if (y == 1 && face == BlockFace.SELF) {
                     blockFace = BlockFace.UP;
+                } else if (y == 1 && face == BlockFace.SELF) {
+                    blockFace = BlockFace.DOWN;
                 } else {
                     blockFace = null;
                 }
@@ -412,9 +416,4 @@ public final class GlowBlock implements Block {
         if (type != null)
             type.onBlockChanged(this, oldType, oldData, newType, newData);
     }
-
-    private static final BlockFace[] LAYER = new BlockFace[]{
-            BlockFace.NORTH_WEST, BlockFace.NORTH, BlockFace.NORTH_EAST,
-            BlockFace.EAST, BlockFace.SELF, BlockFace.WEST,
-            BlockFace.SOUTH_WEST, BlockFace.SOUTH, BlockFace.SOUTH_EAST};
 }
