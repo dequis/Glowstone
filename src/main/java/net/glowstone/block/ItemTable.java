@@ -126,6 +126,7 @@ public final class ItemTable {
         reg(Material.DOUBLE_PLANT, new BlockDoublePlant());
         reg(Material.BROWN_MUSHROOM, new BlockMushroom(Material.BROWN_MUSHROOM));
         reg(Material.RED_MUSHROOM, new BlockMushroom(Material.RED_MUSHROOM));
+        reg(Material.SAPLING, new BlockSapling());
 
         reg(Material.SIGN, new ItemSign());
         reg(Material.REDSTONE, new ItemPlaceAs(Material.REDSTONE_WIRE));
