@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-public class BlockTallGrass extends BlockPlant implements IBlockGrowable {
+public class BlockTallGrass extends BlockType implements IBlockGrowable {
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block) {
