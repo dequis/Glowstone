@@ -68,7 +68,7 @@ public final class ItemTable {
         reg(Material.QUARTZ_ORE, new BlockDirectDrops(Material.QUARTZ));
         reg(Material.REDSTONE_ORE, new BlockRandomDrops(Material.REDSTONE, 0, 3, 4));
         reg(Material.CARROT, new BlockDirectDrops(Material.CARROT_ITEM));
-        reg(Material.COCOA, new BlockDirectDrops(Material.INK_SACK, 3, 1));
+        reg(Material.COCOA, new BlockCocoa());
         reg(Material.DEAD_BUSH, new BlockDropless());
         reg(Material.LONG_GRASS, new BlockTallGrass());
         reg(Material.HUGE_MUSHROOM_1, new BlockHugeMushroom(true));
