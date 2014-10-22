@@ -2,13 +2,25 @@
 language: java
 jdk: oraclejdk7
 
-install:
-  # Try to fetch required glowkit PRs, if any.
-  - "./etc/fetch_glowkit_pr.sh $TRAVIS_PULL_REQUEST"
 
-# Compile and package JAR and set build properties
+
+install:
+
+  # Required for fetch_glowkit_pr.sh
+  - "sudo apt-get install jq"
+
+  # Try to fetch required glowkit PRs, if any.
+  # But not today. Today is testing day. Testing day erryday.
+  - "./etc/fetch_glowkit_pr.sh 374 || echo 'Glowkit build failed - trying to continue anyway'"
+  - "./etc/fetch_glowkit_pr.sh 402 || echo 'Glowkit build failed - trying to continue anyway'"
+  - "./etc/fetch_glowkit_pr.sh 413 || echo 'Glowkit build failed - trying to continue anyway'"
+
+  # Fetch gradle stuff, so it doesn't appear in the script step
+  - "./gradlew clean"
+
 script:
-  - "./gradlew clean build remap"
+  # Compile and package JAR and set build properties
+  - "./gradlew build remap"
 
 after_success:
   # Check if commit is not a pull request, if repo is official, and branch is master, generate and deploy artifacts and reports
