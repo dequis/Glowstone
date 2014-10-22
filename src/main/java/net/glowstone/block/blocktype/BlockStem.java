@@ -18,10 +18,10 @@ public class BlockStem extends BlockType {
     private final Random random = new Random();
 
     public BlockStem(Material plantType) {
-        if (plantType.equals(Material.MELON_STEM)) {
+        if (plantType == Material.MELON_STEM) {
             fruitType = Material.MELON_BLOCK;
             seedsType = Material.MELON_SEEDS;
-        } else if (plantType.equals(Material.PUMPKIN_STEM)) {
+        } else if (plantType == Material.PUMPKIN_STEM) {
             fruitType = Material.PUMPKIN;
             seedsType = Material.PUMPKIN_SEEDS;
         }
@@ -37,10 +37,10 @@ public class BlockStem extends BlockType {
         int cropState = block.getData();
         if (cropState >= CropState.RIPE.ordinal()) {
             // check around there's not already a fruit
-            if (block.getRelative(BlockFace.EAST).getType().equals(fruitType)
-                    || block.getRelative(BlockFace.WEST).getType().equals(fruitType)
-                    || block.getRelative(BlockFace.NORTH).getType().equals(fruitType)
-                    || block.getRelative(BlockFace.SOUTH).getType().equals(fruitType)) {
+            if (block.getRelative(BlockFace.EAST).getType() == fruitType
+                    || block.getRelative(BlockFace.WEST).getType() == fruitType
+                    || block.getRelative(BlockFace.NORTH).getType() == fruitType
+                    || block.getRelative(BlockFace.SOUTH).getType() == fruitType) {
                 return;
             }
             // produce a fruit if possible
@@ -62,12 +62,12 @@ public class BlockStem extends BlockType {
             final GlowBlock targetBlock = block.getRelative(face);
             final GlowBlockState targetBlockState = targetBlock.getState();
             final GlowBlock belowTargetBlock = targetBlock.getRelative(BlockFace.DOWN);
-            if (targetBlock.getType().equals(Material.AIR)
-                    && (belowTargetBlock.getType().equals(Material.SOIL)
-                    || belowTargetBlock.getType().equals(Material.DIRT)
-                    || belowTargetBlock.getType().equals(Material.GRASS))) {
+            if (targetBlock.getType() == Material.AIR
+                    && (belowTargetBlock.getType() == Material.SOIL
+                    || belowTargetBlock.getType() == Material.DIRT
+                    || belowTargetBlock.getType() == Material.GRASS)) {
                 targetBlockState.setType(fruitType);
-                if (fruitType.equals(Material.PUMPKIN)) {
+                if (fruitType == Material.PUMPKIN) {
                     targetBlockState.setData(new Pumpkin(face.getOppositeFace()));
                 }
                 targetBlockState.update(true);
