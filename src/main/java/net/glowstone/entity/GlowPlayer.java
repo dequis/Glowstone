@@ -312,8 +312,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         // send initial location
         session.send(new PositionRotationMessage(location));
 
-        if (server.getResourcePackURL() != null) {
-            setResourcePack(server.getResourcePackURL());
+        if (!server.getResourcePackURL().equals("")) {
+            setResourcePack(server.getResourcePackURL(), server.getResourcePackHash());
         }
     }
 
@@ -1325,8 +1325,14 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    @Deprecated
     public void setResourcePack(String url) {
-        session.send(new ResourcePackSendMessage(url, ""));
+        setResourcePack(url, "");
+    }
+
+    @Override
+    public void setResourcePack(String url, String hash) {
+        session.send(new ResourcePackSendMessage(url, hash));
     }
 
     ////////////////////////////////////////////////////////////////////////////
