@@ -87,6 +87,14 @@ public final class ItemTable {
         reg(Material.FIRE, new BlockFire());
         reg(Material.MONSTER_EGGS, new BlockDropless());
         reg(Material.ENDER_PORTAL_FRAME, new BlockEnderPortalFrame());
+        reg(Material.FENCE_GATE, new BlockFenceGate());
+        reg(Material.ACACIA_FENCE_GATE, new BlockFenceGate());
+        reg(Material.BIRCH_FENCE_GATE, new BlockFenceGate());
+        reg(Material.DARK_OAK_FENCE_GATE, new BlockFenceGate());
+        reg(Material.JUNGLE_FENCE_GATE, new BlockFenceGate());
+        reg(Material.SPRUCE_FENCE_GATE, new BlockFenceGate());
+        reg(Material.TRAP_DOOR, new BlockWoodenTrapDoor());
+        reg(Material.IRON_TRAP_DOOR, new BlockIronTrapDoor());
         reg(Material.FURNACE, new BlockFurnace());
         reg(Material.LEVER, new BlockLever());
         reg(Material.HOPPER, new BlockHopper());
@@ -113,6 +121,7 @@ public final class ItemTable {
         reg(Material.STONE_BUTTON, new BlockButton(Material.STONE_BUTTON));
         reg(Material.WOOD_BUTTON, new BlockButton(Material.WOOD_BUTTON));
         reg(Material.BED_BLOCK, new BlockBed());
+        reg(Material.SKULL, new BlockSkull());
         reg(Material.TORCH, new BlockTorch());
         reg(Material.DAYLIGHT_DETECTOR, new BlockDaylightDetector());
         reg(Material.DAYLIGHT_DETECTOR_INVERTED, new BlockDaylightDetector());
@@ -127,6 +136,8 @@ public final class ItemTable {
         reg(Material.BROWN_MUSHROOM, new BlockMushroom(Material.BROWN_MUSHROOM));
         reg(Material.RED_MUSHROOM, new BlockMushroom(Material.RED_MUSHROOM));
         reg(Material.SAPLING, new BlockSapling());
+        reg(Material.STANDING_BANNER, new BlockBanner());
+        reg(Material.WALL_BANNER, new BlockBanner());
 
         reg(Material.SIGN, new ItemSign());
         reg(Material.REDSTONE, new ItemPlaceAs(Material.REDSTONE_WIRE));
@@ -153,6 +164,7 @@ public final class ItemTable {
         reg(Material.CARROT_ITEM, new ItemFoodSeeds(Material.CARROT, Material.SOIL));
         reg(Material.POTATO_ITEM, new ItemFoodSeeds(Material.POTATO, Material.SOIL));
         reg(Material.INK_SACK, new ItemDye());
+        reg(Material.BANNER, new ItemBanner());
     }
 
     private void reg(Material material, ItemType type) {
