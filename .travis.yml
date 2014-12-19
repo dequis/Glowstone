@@ -3,6 +3,9 @@ language: java
 jdk: oraclejdk7
 
 install:
+  # test!
+  - "jq --version"
+
   # Try to fetch required glowkit PRs, if any.
   - "./etc/fetch_glowkit_pr.sh $TRAVIS_PULL_REQUEST || echo 'Glowkit build failed - trying to continue anyway'"
 
