@@ -19,8 +19,8 @@ script:
   # Compile and package JAR and set build properties
   - "gradle build remap"
 
-  # Avoid including this file in the build cache
-  - "rm $HOME/.gradle/caches/modules-2/modules-2.lock"
+  # Avoid including some files in the build cache
+  - "rm -rf $HOME/.gradle/caches/modules-2/"
 
 after_success:
   # Check if commit is not a pull request, if repo is official, and branch is master, generate and deploy artifacts and reports
