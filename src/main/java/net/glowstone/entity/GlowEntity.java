@@ -7,6 +7,8 @@ import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
+import net.glowstone.entity.physics.BoundingBox;
+import net.glowstone.entity.physics.EntityBoundingBox;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.util.Position;
 import org.apache.commons.lang.Validate;
@@ -132,6 +134,11 @@ public abstract class GlowEntity implements Entity {
      * How long the entity has been on fire, or 0 if it is not.
      */
     private int fireTicks = 0;
+
+    /**
+     * The entity's bounding box, or null if it has no physical presence.
+     */
+    private EntityBoundingBox boundingBox;
 
     /**
      * Creates an entity and adds it to the specified world.
@@ -515,6 +522,18 @@ public abstract class GlowEntity implements Entity {
 
         teleport(target);
         return true;
+    }
+
+    protected void setSize(float xz, float y) {
+        //todo Size stuff with bounding boxes.
+    }
+
+    protected final void setBoundingBox(double xz, double y) {
+        boundingBox = new EntityBoundingBox(xz, y);
+    }
+
+    public boolean intersects(BoundingBox box) {
+        return boundingBox != null && boundingBox.intersects(box);
     }
 
     ////////////////////////////////////////////////////////////////////////////
