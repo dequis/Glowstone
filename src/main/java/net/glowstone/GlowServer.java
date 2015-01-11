@@ -853,7 +853,7 @@ public final class GlowServer implements Server {
     public boolean getProxySupport() {
         return config.getBoolean(ServerConfig.Key.PROXY_SUPPORT);
     }
-    
+
     /**
      * Get the reason of kick that server sends to you if you're not in the whitelist.
      * @return Kick reason for whitelist disconnection.
@@ -861,7 +861,7 @@ public final class GlowServer implements Server {
     public String getWhitelistKickMessage() {
         return config.getString(ServerConfig.Key.KICK_WHITELIST_MESSAGE);
     }
-    
+
     /**
      * Get the reason of kick if the server is full
      * @return Kick reason if server is full
@@ -869,7 +869,7 @@ public final class GlowServer implements Server {
     public String getServerIsFullMessage() {
         return config.getString(ServerConfig.Key.KICK_SERVERFULL).replace("{0}", Integer.toString(this.getMaxPlayers()));
     }
-    
+
     /**
      * Get the reason of kick if the client is outdated
      * @return Kick reason if client is outdated
@@ -877,7 +877,7 @@ public final class GlowServer implements Server {
     public String getOutdatedClientMessage() {
         return config.getString(ServerConfig.Key.OUTDATED_CLIENT).replace("{0}", GAME_VERSION);
     }
-    
+
     /**
      * Get the reason of kick if the server is outdated
      * @return Kick reason if server is outdated
@@ -885,14 +885,14 @@ public final class GlowServer implements Server {
     public String getOutdatedServerMessage() {
         return config.getString(ServerConfig.Key.OUTDATED_SERVER).replace("{0}", GAME_VERSION);
     }
-    
+
     /**
      * Get the message that server send to player if it execute a wrong command
      * @param command
      * @return Unknown command message
      */
     public String getUnknownCommandMessage(String command) {
-        return config.getString(ServerConfig.Key.UNKNOW_COMMAND).replace("{0}", command);
+        return config.getString(ServerConfig.Key.UNKNOWN_COMMAND).replace("{0}", command);
     }
 
     /**
